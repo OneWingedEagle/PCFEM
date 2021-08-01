@@ -1,0 +1,119 @@
+
+Loading mesh file completed.
+// DATA TYPE (0: Magnetic FEM, 1: Magnetic CLN)
+0
+// DIMENSION (2: 2D, 3: 3D, 4: Axisymmetric 2D)
+2
+// COORDINATE (0: Cartesian, 1: Cylindrical)
+0
+// ANALYSIS MODE (0: Magnetostatic, 1:  A-method,  2: A-fi-method, 3: CLN
+1
+// NONLINEAR (0: Linear , 1: Nonliear 
+0
+// AC (1: AC , 0: Time domain) // FREQ (if AC =1) 
+1		100
+// NUMBER OF REGIONS 
+2
+// *REGION_ID * BH_ID * MU * SIGMA , MAGNETIZATION [Mx, My, Mz] 
+1,0,1.0,1e6
+// *REGION_ID * BH_ID * MU * SIGMA , MAGNETIZATION [Mx, My, Mz] 
+2,0,1.0,0
+// * BOUNDRAY CONDITION (D: Drichlet, N: Neumann) *
+PS,2
+// * BOUNDRAY CONDITION (D: Drichlet, N: Neumann) *
+PS,1
+// * BOUNDRAY CONDITION (D: Drichlet, N: Neumann) *
+D
+// * BOUNDRAY CONDITION (D: Drichlet, N: Neumann) *
+D
+// *NUMBER OF GIVEN CURRENT DENSITY * 
+1
+// * COIL_ID * Jx *  Jy * Jz * TIME_ID *
+1	0	0	0e-7	1
+//NUMBER OF COILS 
+0
+// UNIFORM FIELD TIME_ID 
+1
+// Bx  By 0 
+0.	0	0
+//NETWORK (CIRCUT) 
+NETWORK
+// TYPE ID  NODE1 NODE2 VALUE 
+CPS 1	1	2	1
+// TYPE ID  NODE1 NODE2 VALUE 
+R 	2	2	1	1
+// TYPE ID  NODE1 NODE2 VALUE 
+END
+// NUM TIME FUNCTIONS
+1
+// TIME ID // TYPE
+1	0
+// AMPLITUDE // PERIOD // PHASE
+1	1
+//DELTA_TIME
+1e-2
+//STEP_BEGIN  *  STEP_END * INTERVAL
+0,0,1
+//SAVE_FLUX * SAVE_CURRENT
+1		1
+//NUMBER OF BH_DATA
+1
+// * H * B* 
+1	50H400
+Dependent Network Elements:
+0 :  1
+
+ Tieset Matrix:
+
+1 	1 	
+
+
+Loading data file completed.
+Number of edges on Bn0 boundary = 0
+Number of edges on Ht0 boundary = 0
+
+ Element type: quadrangle
+ Number of regions: 2
+ Number of elements: 400
+ Number of nodes   : 441    known: 0 , unknown: 0
+ Number of edges   : 441    known: 21 , unknown: 399
+ Number of unknown currents   : 0
+ Total number of unknows   : 399
+
+
+femSolver.ACMagSolver starts...
+
+frequency =100.0
+Computing Symmetric Complex Preconditioner..
+COICCG iteration:     0	 error : 1.00E00	 res max: 3.45E03
+COICCG iteration:    26	 error : 4.90E-07	 res max: 1.69E-03
+
+femSolver.ACMagSolver ends.
+
+Bmax ( linear analysis): 0.0
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\currents\JeRe0.txt
+
+ Bun data was written to:
+    D:\JavaWorks\MagFem\data\data AC2D\currents\bun0.txt
+
+step 0
+Joule Losses [W]
+    1        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\fluxes\fluxRe0.txt
+ Temperature was written to D:\JavaWorks\MagFem\data\data AC2D\fluxes\Ar0.txt
+
+ Bun data was written to:
+    D:\JavaWorks\MagFem\data\data AC2D\fluxes\bun0.txt
+
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\currents\JeIm0.txt
+step 0
+Joule Losses [W]
+    1        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\fluxes\fluxIm0.txt
+25

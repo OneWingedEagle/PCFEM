@@ -1,0 +1,408 @@
+
+Loading mesh file completed.
+// DATA TYPE (0: Magnetic FEM, 1: Magnetic CLN)
+0
+// DIMENSION (2: 2D, 3: 3D, 4: Axisymmetric 2D)
+2
+// COORDINATE (0: Cartesian, 1: Cylindrical)
+0
+// ANALYSIS MODE (0: Magnetostatic, 1:  A-method,  2: A-fi-method, 3: CLN
+1
+// NONLINEAR (0: Linear , 1: Nonliear 
+0
+// AC (1: AC , 0: Time domain) // FREQ (if AC =1) 
+1		1.5
+// NUMBER OF REGIONS 
+2
+// *REGION_ID * BH_ID * MU * SIGMA , MAGNETIZATION [Mx, My, Mz] 
+1,0,1.0,2.72
+// *REGION_ID * BH_ID * MU * SIGMA , MAGNETIZATION [Mx, My, Mz] 
+2,0,1.0,1
+// * BOUNDRAY CONDITION (D: Drichlet, N: Neumann) *
+PS,2
+// * BOUNDRAY CONDITION (D: Drichlet, N: Neumann) *
+PS,1
+// * BOUNDRAY CONDITION (D: Drichlet, N: Neumann) *
+D
+// * BOUNDRAY CONDITION (D: Drichlet, N: Neumann) *
+D
+// *NUMBER OF GIVEN CURRENT DENSITY * 
+0
+//NUMBER OF COILS 
+0
+// UNIFORM FIELD TIME_ID 
+1
+// Bx  By 0 
+0.	0	0
+//NETWORK (CIRCUT) 
+NETWORK
+// TYPE ID  NODE1 NODE2 VALUE 
+CPS 1	1	2	1
+// TYPE ID  NODE1 NODE2 VALUE 
+R 	2	2	1	1
+// TYPE ID  NODE1 NODE2 VALUE 
+END
+// NUM TIME FUNCTIONS
+1
+// TIME ID // TYPE
+1	0
+// AMPLITUDE // PERIOD // PHASE
+1	1
+//DELTA_TIME
+1e-2
+//STEP_BEGIN  *  STEP_END * INTERVAL
+0,9,1
+//SAVE_FLUX * SAVE_CURRENT
+1		1
+//NUMBER OF BH_DATA
+1
+// * H * B* 
+1	50H400
+Dependent Network Elements:
+0 :  1
+
+ Tieset Matrix:
+
+1 	1 	
+
+
+Loading data file completed.
+Number of edges on Bn0 boundary = 0
+Number of edges on Ht0 boundary = 0
+
+ Element type: quadrangle
+ Number of regions: 2
+ Number of elements: 800
+ Number of nodes   : 882    known: 0 , unknown: 0
+ Number of edges   : 861    known: 21 , unknown: 819
+ Number of unknown currents   : 0
+ Total number of unknows   : 819
+
+
+femSolver.ACMagSolver starts...
+
+frequency =1.5
+Computing Symmetric Complex Preconditioner..
+COICCG iteration:     0	 error : 1.00E00	 res max: 3.45E03
+COICCG iteration:    36	 error : 9.32E-07	 res max: 3.21E-03
+
+femSolver.ACMagSolver ends.
+
+Bmax ( linear analysis): 0.0
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeRe0.txt
+
+ Bun data was written to:
+    D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\bun0.txt
+
+step 0
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxRe0.txt
+ Temperature was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\Ar0.txt
+
+ Bun data was written to:
+    D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\bun0.txt
+
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeIm0.txt
+step 0
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxIm0.txt
+Number of edges on Bn0 boundary = 0
+Number of edges on Ht0 boundary = 0
+
+femSolver.ACMagSolver starts...
+
+frequency =1.55
+Computing Symmetric Complex Preconditioner..
+COICCG iteration:     0	 error : 1.00E00	 res max: 3.45E03
+COICCG iteration:    36	 error : 9.32E-07	 res max: 3.22E-03
+
+femSolver.ACMagSolver ends.
+
+Bmax ( linear analysis): 99.80267284282715
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeRe1.txt
+step 1
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxRe1.txt
+ Temperature was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\Ar1.txt
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeIm1.txt
+step 1
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxIm1.txt
+Number of edges on Bn0 boundary = 0
+Number of edges on Ht0 boundary = 0
+
+femSolver.ACMagSolver starts...
+
+frequency =1.6
+Computing Symmetric Complex Preconditioner..
+COICCG iteration:     0	 error : 1.00E00	 res max: 3.45E03
+COICCG iteration:    36	 error : 9.33E-07	 res max: 3.22E-03
+
+femSolver.ACMagSolver ends.
+
+Bmax ( linear analysis): 99.80267284282715
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeRe2.txt
+step 2
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxRe2.txt
+ Temperature was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\Ar2.txt
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeIm2.txt
+step 2
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxIm2.txt
+Number of edges on Bn0 boundary = 0
+Number of edges on Ht0 boundary = 0
+
+femSolver.ACMagSolver starts...
+
+frequency =1.6500000000000001
+Computing Symmetric Complex Preconditioner..
+COICCG iteration:     0	 error : 1.00E00	 res max: 3.45E03
+COICCG iteration:    36	 error : 9.33E-07	 res max: 3.22E-03
+
+femSolver.ACMagSolver ends.
+
+Bmax ( linear analysis): 99.80267284282715
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeRe3.txt
+step 3
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxRe3.txt
+ Temperature was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\Ar3.txt
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeIm3.txt
+step 3
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxIm3.txt
+Number of edges on Bn0 boundary = 0
+Number of edges on Ht0 boundary = 0
+
+femSolver.ACMagSolver starts...
+
+frequency =1.7000000000000002
+Computing Symmetric Complex Preconditioner..
+COICCG iteration:     0	 error : 1.00E00	 res max: 3.45E03
+COICCG iteration:    36	 error : 9.34E-07	 res max: 3.22E-03
+
+femSolver.ACMagSolver ends.
+
+Bmax ( linear analysis): 99.80267284282715
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeRe4.txt
+step 4
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxRe4.txt
+ Temperature was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\Ar4.txt
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeIm4.txt
+step 4
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxIm4.txt
+Number of edges on Bn0 boundary = 0
+Number of edges on Ht0 boundary = 0
+
+femSolver.ACMagSolver starts...
+
+frequency =1.7500000000000002
+Computing Symmetric Complex Preconditioner..
+COICCG iteration:     0	 error : 1.00E00	 res max: 3.45E03
+COICCG iteration:    36	 error : 9.34E-07	 res max: 3.22E-03
+
+femSolver.ACMagSolver ends.
+
+Bmax ( linear analysis): 99.80267284282715
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeRe5.txt
+step 5
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxRe5.txt
+ Temperature was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\Ar5.txt
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeIm5.txt
+step 5
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxIm5.txt
+Number of edges on Bn0 boundary = 0
+Number of edges on Ht0 boundary = 0
+
+femSolver.ACMagSolver starts...
+
+frequency =1.8000000000000003
+Computing Symmetric Complex Preconditioner..
+COICCG iteration:     0	 error : 1.00E00	 res max: 3.45E03
+COICCG iteration:    36	 error : 9.35E-07	 res max: 3.22E-03
+
+femSolver.ACMagSolver ends.
+
+Bmax ( linear analysis): 99.80267284282715
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeRe6.txt
+step 6
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxRe6.txt
+ Temperature was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\Ar6.txt
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeIm6.txt
+step 6
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxIm6.txt
+Number of edges on Bn0 boundary = 0
+Number of edges on Ht0 boundary = 0
+
+femSolver.ACMagSolver starts...
+
+frequency =1.8500000000000003
+Computing Symmetric Complex Preconditioner..
+COICCG iteration:     0	 error : 1.00E00	 res max: 3.45E03
+COICCG iteration:    36	 error : 9.35E-07	 res max: 3.22E-03
+
+femSolver.ACMagSolver ends.
+
+Bmax ( linear analysis): 99.80267284282715
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeRe7.txt
+step 7
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxRe7.txt
+ Temperature was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\Ar7.txt
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeIm7.txt
+step 7
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxIm7.txt
+Number of edges on Bn0 boundary = 0
+Number of edges on Ht0 boundary = 0
+
+femSolver.ACMagSolver starts...
+
+frequency =1.9000000000000004
+Computing Symmetric Complex Preconditioner..
+COICCG iteration:     0	 error : 1.00E00	 res max: 3.45E03
+COICCG iteration:    36	 error : 9.36E-07	 res max: 3.23E-03
+
+femSolver.ACMagSolver ends.
+
+Bmax ( linear analysis): 99.80267284282715
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeRe8.txt
+step 8
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxRe8.txt
+ Temperature was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\Ar8.txt
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeIm8.txt
+step 8
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxIm8.txt
+Number of edges on Bn0 boundary = 0
+Number of edges on Ht0 boundary = 0
+
+femSolver.ACMagSolver starts...
+
+frequency =1.9500000000000004
+Computing Symmetric Complex Preconditioner..
+COICCG iteration:     0	 error : 1.00E00	 res max: 3.45E03
+COICCG iteration:    36	 error : 9.36E-07	 res max: 3.23E-03
+
+femSolver.ACMagSolver ends.
+
+Bmax ( linear analysis): 99.80267284282715
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeRe9.txt
+step 9
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxRe9.txt
+ Temperature was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\Ar9.txt
+ Eddy current was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\currents\JeIm9.txt
+step 9
+Joule Losses [W]
+    1        0.000000000000e+00
+    2        0.000000000000e+00
+Energies 
+    1  0.00000e+00
+    2  0.00000e+00
+ Magnetic flux density was written to D:\JavaWorks\MagFem\data\data AC2D\2cells\fluxes\fluxIm9.txt
+350
+Total cpu time (s):        1.8
