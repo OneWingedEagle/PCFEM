@@ -3663,7 +3663,6 @@ public class Calculator {
 
 		double edge_length=edge_vect.norm();
 		
-		//edge_vect=new Vect(1,0);
 		
 		edge_vect.normalize();
 
@@ -3700,7 +3699,7 @@ public class Calculator {
 				N[0]=(1+localCo.el[0])*0.5;
 				N[1]=(1-localCo.el[0])*0.5;
 
-									
+					
 				for(int j=0;j<2;j++){
 					int jx=(j+jshift)%model.nElVert;
 					if(jx<0) jx+=model.nElVert;

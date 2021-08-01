@@ -1208,7 +1208,7 @@ public class MeshGeneration {
 			//double[][] bb={{-300,300,-300,300},{-60,60,-60,60},{-40,40,-40,40},{40,60,-5,5}, {-35,0,-35,35},{-100,-65,-35,35}};
 			//double[][] bb={{-100,100,-100,100}};
 			
-			double[][] bb={{1,10,0,10}};
+			double[][] bb={{0,1,0,20}};
 			/*
 			double[] bair={470,700,0,12.5};
 			double[] balum={0,2.8,0,5.7};
@@ -1288,6 +1288,10 @@ for(int j=0;j<bb.length;j++){
 				if(j<2){
 				mg.minMeshRight[j][k]=1;
 				mg.minMeshLeft[j][k]=1;
+				if(k>1){
+					mg.minMeshRight[j][k]=.002;
+					mg.minMeshLeft[j][k]=.002;					
+				}
 				}
 				else{
 					mg.minMeshRight[j][k]=1;
