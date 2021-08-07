@@ -785,13 +785,14 @@ public class MagMatAssembler {
 					if((j3>=0 && j4>=0)) {
 						int n1=model.edge[edgeNumb[j3]].node[0].id;
 						matrixRow=model.nodeVarIndex[n1]-1;
-						rt.el[matrixRow+model.numberOfUnknownEdges]+=ki*edge_length/2;		
-					//	rhs.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;	
+						//rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
+						rt.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;		
 
 						int n2=model.edge[edgeNumb[j4]].node[0].id;
 						matrixRow=model.nodeVarIndex[n2]-1;
-						rt.el[matrixRow+model.numberOfUnknownEdges]+=kt*edge_length/2;	
-					//	rhs.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;	
+					//	rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
+						rt.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;	
+
 						counted2[n1]++;
 						counted2[n2]++;		
 					}
@@ -800,109 +801,10 @@ public class MagMatAssembler {
 
 			}
 		
-		
-		int[] ends=new int[2];
-		int ix=0;
-		for(int i=1;i<=model.numberOfNodes;i++){
-			if(counted1[i]==1){
-				ends[ix++]=i;
-			}
-		}
-		
-		int matrixRow0=model.nodeVarIndex[ends[0]]-1;
-		int matrixRow1=model.nodeVarIndex[ends[1]]-1;
-		double rhs0=rhs.el[matrixRow0+model.numberOfUnknownEdges];
-		double rhs1=rhs.el[matrixRow1+model.numberOfUnknownEdges];
-		
-	//	rhs.el[matrixRow0+model.numberOfUnknownEdges]*=.5;
-	//	rhs.el[matrixRow1+model.numberOfUnknownEdges]*=.5;
-		
-	//	rhs.el[matrixRow0+model.numberOfUnknownEdges]+=rhs1;
-	//	rhs.el[matrixRow1+model.numberOfUnknownEdges]+=rhs0;
-		
-	//	rhs.show();
+
 
 	}
 
-/*		for(int ir=1;ir<=model.numberOfRegions;ir++){
-
-			for(int i=model.region[ir].getFirstEl();i<=model.region[ir].getLastEl();i++){
-
-
-				int[] vertNumb=model.element[i].getVertNumb();
-
-				int[] edgeNumb=model.element[i].getEdgeNumb();
-				
-				int j1=-1;
-				int j2=-1;
-				
-				for(int j=0;j<model.nElEdge;j++){
-					int edgNum=edgeNumb[j];
-					if(model.edge[edgNum].incident){
-						if(j1==-1) j1=j;
-						else if(j2==-1) j2=j;
-						else
-						break;
-					}
-				}
-
-				int	j3=-1;
-				int	j4=-1;
-				for(int j=0;j<model.nElEdge;j++){
-					int edgNum=edgeNumb[j];
-					if(model.edge[edgNum].exit){
-						if(j3==-1) j3=j;
-						else if(j4==-1) j4=j;
-						else
-						break;
-					}
-				}
-				
-				
-
-				if(j1<0 && j2<0 && j3<0 && j4<0) continue;
-			
-
-				Vect edge_vect=null;
-				if(j3<0 && j4<0) {
-					 edge_vect=model.edge[edgeNumb[j2]].node[0].getCoord().sub(model.edge[edgeNumb[j1]].node[0].getCoord());
-				}else{
-					edge_vect=model.edge[edgeNumb[j4]].node[0].getCoord().sub(model.edge[edgeNumb[j3]].node[0].getCoord());
-				}
-				
-				double edge_length=edge_vect.norm();
-							
-				
-			
-				for(int j=0;j<model.nElVert;j++){
-
-					matrixRow=model.nodeVarIndex[vertNumb[j]]-1;
-				
-					if(matrixRow<0) continue;
-					
-
-					if((j1>=0 && j2>=0)){ // incident wave at 1st boundary only
-						rhs.el[edgeNumb[j1]]+=2*edge_length/2;	
-						rhs.el[edgeNumb[j2]]+=2*edge_length/2;	
-					//	rhs.el[edgeNumb[j1]]=edge_length;	
-					//	rhs.el[edgeNumb[j2]]=edge_length;	
-						counted[edgeNumb[j1]]++;
-						counted[edgeNumb[j2]]++;
-					}
-					
-					if((j1>=0 && j2>=0)) // incident wave at 1st boundary only
-						rhs.el[matrixRow+model.numberOfUnknownEdges]=2*ki*edge_length/2;		
-					
-					
-					if(j1>=0 && j2>=0)
-						rt.el[matrixRow+model.numberOfUnknownEdges]=ki*edge_length;		
-					else
-						rt.el[matrixRow+model.numberOfUnknownEdges]=kt*edge_length;	
-				}
-			}
-			}
-*/
-	//}
 
 	private  SpMat getPs(Model model){
 

@@ -268,7 +268,7 @@ public class BoundarySet {
 
 				int nnx=0;	
 				for(int i=1;i<=model.numberOfNodes;i++)
-					if(model.node[i].incident || model.node[i].exit )
+					if((model.node[i].incident || model.node[i].exit ) &&  model.node[i].getMap()==0)
 						model.nodeVarIndex[i]=++nnx;
 
 				model.numberOfVarNodes=nnx;
@@ -278,7 +278,7 @@ public class BoundarySet {
 				nnx=0;
 
 				for(int i=1;i<=model.numberOfNodes;i++){
-					if(model.node[i].incident || model.node[i].exit ){
+					if((model.node[i].incident || model.node[i].exit )  &&  model.node[i].getMap()==0){
 						model.varNodeNumber[++nnx]=i;
 					}
 				}

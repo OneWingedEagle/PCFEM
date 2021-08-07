@@ -30,7 +30,7 @@ public class SpMatComp  {
 			row[i]=new SpVectComp(I,L);
 	}
 
-	public SpMatComp (Mat Mr, Mat Mm, double factor){
+	public SpMatComp (Mat Mr, Mat Mm, double factor, boolean asym){
 		
 		
 		nRow=Mr.nRow;
@@ -38,7 +38,10 @@ public class SpMatComp  {
 		
 		int[] nz=new int[nRow];
 		for(int i=0;i<nRow;i++){
-			for(int j=0;j<=i;j++)
+			
+			int end=i;
+			if(asym) end=Mr.nCol-1;
+			for(int j=0;j<=end;j++)
 				if(Mr.el[i][j]!=0 || Mm.el[i][j]!=0) nz[i]++;
 		}
 		
@@ -46,8 +49,11 @@ public class SpMatComp  {
 			row[i]=new SpVectComp(nRow,nz[i]);
 
 			int nz2=0;
+			
+			int end=i;
+			if(asym) end=Mr.nCol-1;
 
-			for(int j=0;j<=i;j++)
+			for(int j=0;j<=end;j++)
 				if(Mr.el[i][j]!=0 || Mm.el[i][j]!=0) {
 					row[i].el[nz2]=new Complex(Mr.el[i][j],factor*Mm.el[i][j]);
 					row[i].index[nz2]=j;
@@ -437,8 +443,10 @@ public class SpMatComp  {
 		for(int i=0;i<nRow;i++)
 			for(int j=0;j<row[i].nzLength;j++){
 				int cl=row[i].index[j];
+				if(cl<T.nRow){
 				T.row[cl].el[nz[cl]]=row[i].el[j].deepCopy();
 				T.row[cl].index[nz[cl]++]=i;
+				}
 			}
 
 		T.sortAndTrim(nz);
@@ -455,6 +463,8 @@ public class SpMatComp  {
 
 		for(int i=0;i<nRow;i++){
 			SpVectComp rx=new SpVectComp(nRow,clmax);
+			
+			if(row[i]==null) continue;
 
 			for(int j=0;j<row[i].nzLength;j++){
 				int cl=row[i].index[j];
@@ -472,6 +482,7 @@ public class SpMatComp  {
 				}
 			}
 
+		//	rx.hshow();
 			A.row[i]=rx.deepCopy();
 			
 			}
@@ -536,6 +547,24 @@ public class SpMatComp  {
 					else if(this.hermit)
 						w.el[j]=w.el[j].add(row[i].el[k].conj().times(u.el[i]));
 				}
+			}
+		}
+		return v.add(w);
+	}
+	
+	public VectComp amul(VectComp u){
+
+		VectComp v=new VectComp(getnRow());
+		VectComp w=new VectComp(getnRow());
+		int j;
+		for(int i=0;i<nRow;i++){
+			
+			if(row[i]==null) continue;
+			v.el[i]=new Complex();
+			w.el[i]=new Complex();
+			for(int k=0;k<row[i].nzLength;k++){
+				j=row[i].index[k];
+				v.el[i]=v.el[i].add(row[i].el[k].times(u.el[j]));
 			}
 		}
 		return v.add(w);

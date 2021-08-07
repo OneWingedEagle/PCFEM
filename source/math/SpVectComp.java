@@ -538,7 +538,6 @@ public void showr(){
 		for(int j=0;j<nzLength;j++){
 			if(index[j]==i){
 				eli=el[j].deepCopy();
-				eli.show();
 				break;
 			}
 		}
