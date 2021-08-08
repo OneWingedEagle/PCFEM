@@ -2,6 +2,8 @@ package fem;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
 
 import fem.Network.Elem;
 import fem.Network.ElemType;
@@ -475,6 +477,84 @@ public class MagMatAssembler {
 
 	}
 	
+	public void setRHS_SCAT(Model model,int reim){		
+
+		model.RHS=new Vect(model.numberOfUnknowns);
+		
+		double pcw=model.pcw;
+		double E0=model.E0;
+
+		int matrixRow=0, rowEdgeNumb;
+
+		double[] Cj=new double[model.nElEdge];
+
+		boolean hasJ=true;
+
+		Vect J=null;
+		double y0=model.spaceBoundary[2];
+
+
+		for(int ir=1;ir<=model.numberOfRegions;ir++){
+
+			double eps=model.region[ir].getSigma().el[2];
+			
+			for(int i=model.region[ir].getFirstEl();i<=model.region[ir].getLastEl();i++){
+				int[] edgeNumb=model.element[i].getEdgeNumb();
+
+
+				this.calc.He(model,0,0,i,false,false,hasJ,false);
+
+
+				if(hasJ ){
+					for(int j=0;j<model.nElEdge;j++){
+						
+						
+							double y=model.edge[edgeNumb[j]].node[0].getCoord(1)-y0;
+							
+							if(reim==0)
+								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*cos(-pcw*y));
+							else	if(reim==1)
+								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*sin(-pcw*y));
+
+
+						if(model.dim==2)
+							Cj[j]=J.el[2]*model.Cj2d[j];
+						else{
+							Cj[j]=J.dot(model.Cj[j]);
+
+						}
+
+
+					}
+
+				}
+
+
+
+				for(int j=0;j<model.nElEdge;j++){
+					rowEdgeNumb=edgeNumb[j];
+
+					if(model.edge[rowEdgeNumb].edgeKnown ) continue;
+
+
+					matrixRow=model.edgeUnknownIndex[rowEdgeNumb]-1;
+
+
+					//===========  right-hand side
+		
+			
+						model.RHS.el[matrixRow]+=Cj[j];	
+
+
+
+				}
+			}
+		}
+
+
+	}
+	
+	
 	public void setRHS(Model model,double[] totalLoss){		
 
 		if(model.seperateCoil){
@@ -767,12 +847,12 @@ public class MagMatAssembler {
 					if((j1>=0 && j2>=0)){ // incident wave at 1st boundary only
 						int n1=model.edge[edgeNumb[j1]].node[0].id;
 						matrixRow=model.nodeVarIndex[n1]-1;
-						rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
+					///	rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
 						rt.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;		
 
 						int n2=model.edge[edgeNumb[j2]].node[0].id;
 						matrixRow=model.nodeVarIndex[n2]-1;
-						rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
+					///	rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
 						rt.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;		
 
 					//	rhs.el[edgeNumb[j1]]=edge_length;	

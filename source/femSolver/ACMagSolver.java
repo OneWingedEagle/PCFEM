@@ -3,7 +3,9 @@ package femSolver;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
+import static java.lang.Math.cos;
 import static java.lang.Math.log10;
+import static java.lang.Math.sin;
 
 import fem.Model;
 import math.Complex;
@@ -29,6 +31,7 @@ public class ACMagSolver {
 		VectComp  b=null;
 		Vect pcrhs=null;
 		model.solver.terminate(false);
+		Vect rhsImag=null;
 		
 		boolean dense=true;
 
@@ -119,14 +122,17 @@ public class ACMagSolver {
 		double pcw2=pcw*pcw;
 		model.pcw=pcw;
 		if(photonic==2){
+			
+		model.magMat.setRHS_SCAT(model,1);
+		
+		rhsImag=model.RHS.deepCopy();
+		
+		model.magMat.setRHS_SCAT(model,0);
+		
 		 Ks=new SpMatComp(model.Hs.addSmallerNew(model.Ss.timesNew(-pcw2)),model.Ss.timesNew(0));
 		}else {
 			
 			 Ks1=new SpMatComp(model.Hs.addSmallerNew(model.Ss.timesNew(-pcw2)),model.Ss.timesNew(0));
-
-
-
-
 
 				 neq=Ks1.nRow;
 
@@ -233,7 +239,7 @@ public class ACMagSolver {
 
 						if(spv.index[k]==indx){
 							//spv.el[k]=spv.el[k].add(new Complex(-rt.el[i+nuned],0).times(pcw));
-							spv.el[k]=spv.el[k].add(new Complex(0,-rt.el[i+nuned]).times(pcw));
+							spv.el[k]=spv.el[k].add(new Complex(-rt.el[i+nuned],0).times(pcw));
 						}
 					}
 
@@ -263,10 +269,11 @@ public class ACMagSolver {
 		
 		
 		if(photonic==0 || photonic==2)
-			b=new VectComp(model.RHS);
+			b=new VectComp(model.RHS,rhsImag);
 		else
 		 b=new VectComp(model.RHS.aug(new Vect(nb)));
 		
+		//b.show();
 	
 		 if(model.photonic==2){
 				int nuned=model.numberOfUnknownEdges;
@@ -574,7 +581,20 @@ public class ACMagSolver {
 		xc.timesVoid(model.Ci);	
 		
 		}
-
+		
+		double y0=model.spaceBoundary[2];
+		
+		for(int i=1;i<=model.numberOfEdges;i++){		
+			double y=model.edge[i].node[0].getCoord(1)-y0;
+			
+			double E0r=cos(-pcw*y);
+			double E0m=sin(-pcw*y);
+			int indx=model.edgeUnknownIndex[i]-1;		
+			if(indx>=0){
+				xc.el[indx].re+=E0r;
+				xc.el[indx].im+=E0m;
+			}
+		}
 		
 	//	xc.show();
 		Complex av2=new Complex(0.,0);
@@ -601,7 +621,7 @@ public class ACMagSolver {
 	//	av.show();
 		double pcw2=pcw*pcw;
 		
-		T.el[kf]=av2.norm2()/(av1.norm2());
+		T.el[kf]=pcw2*av2.norm2();///(av1.norm2());
 
 
 	/*

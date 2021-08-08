@@ -52,7 +52,14 @@ public class VectComp implements Cloneable{
 		this.el[i]=new Complex(v.el[i], 0);
 	}
 
-	
+	public VectComp(Vect vr, Vect vm){
+		if(vr.length!=vr.length) throw new NullPointerException("vectrs have different lengths");
+		this.length=vr.length;
+		this.el=new Complex[vr.length];
+		for(int i=0;i<vr.length;i++)
+		this.el[i]=new Complex(vr.el[i], vm.el[i]);
+	}
+
 	
 	
 	public VectComp deepCopy(){
@@ -64,7 +71,7 @@ public class VectComp implements Cloneable{
 	
 	public VectComp add(VectComp v){
 	
-		if(this.length!=v.length) throw new NullPointerException("vectrs have different lengths");
+		if(this.length!=v.length) throw new IllegalArgumentException("vectrs have different lengths");
 		VectComp w=new VectComp(v.length);
 		for(int i=0;i<v.length;i++)
 			w.el[i]=this.el[i].add(v.el[i]);
@@ -73,7 +80,7 @@ public class VectComp implements Cloneable{
 	
 	public VectComp sub(VectComp v){
 		
-		if(this.length!=v.length) throw new NullPointerException("vectrs have different lengths");
+		if(this.length!=v.length) throw new IllegalArgumentException("vectrs have different lengths");
 		VectComp w=new VectComp(v.length);
 		for(int i=0;i<v.length;i++)
 			w.el[i]=this.el[i].sub(v.el[i]);

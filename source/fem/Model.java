@@ -64,7 +64,7 @@ public class Model{
 
 	public byte elCode=4;
 	public double nu0=1e7/(4*PI);
-	public double freq=1,freq2=1,pcw,dt,initialTime=0,errCGmax=1,
+	public double freq=1,freq2=1,pcw,E0=1,dt,initialTime=0,errCGmax=1,
 			errNRmax=1e-6,errCG_NR=1e-1,errFluxMax=1e-3;
 	public int nTsteps,nBegin,nEnd,nInc,nRotorElements,currentTimeStep,fdiv;
 	public int coordCode=0,timeIntegMode=0,eddyTimeIntegMode;
@@ -1164,7 +1164,42 @@ public class Model{
 
 
 	}
+	
+/*	public void setE0_SCAT(int reim){
 
+		
+		this.hasJ=true;
+		
+		double y0=this.spaceBoundary[2];
+
+		Vect regJ=new Vect(3);
+
+		for(int ir=1;ir<=numberOfRegions;ir++){
+			region[ir].hasJ=true;
+			
+			double eps=region[ir].getSigma().el[2];
+
+			
+
+			
+			for(int i=region[ir].getFirstEl();i<=region[ir].getLastEl();i++){
+				
+				double y=this.getElementCenter(i).el[1]-y0;
+				
+				if(reim==0)
+					regJ=new Vect(0, 0, (1-eps)*pcw*pcw*E0*cos(-pcw*y));
+				else	if(reim==1)
+					regJ=new Vect(0, 0, (1-eps)*pcw*pcw*E0*sin(-pcw*y));
+				
+	
+				element[i].setJ(regJ);
+
+			}
+		}
+
+
+	}
+*/
 	public void setM(){
 
 		Vect MReg=new Vect(dim);
