@@ -154,6 +154,21 @@ public class SpVectComp {
 		return dot;
 	}
 	
+	public Complex conjDot(SpVectComp v){
+
+		if(length!=v.length) throw new IllegalArgumentException("Vectrs have different lengths.");
+		
+		Complex dot=new Complex(0,0);
+		Complex vel;
+		for(int i=0;i<nzLength;i++){
+			vel=v.getEl(index[i]);
+			if(!vel.equals(new Complex(0,0)))
+				dot=dot.add(el[i].conj().times(vel));
+	
+		}
+		
+		return dot;
+	}
 	
 
 	public Complex dot(SpVect v,int n){
