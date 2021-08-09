@@ -66,6 +66,7 @@ public class ACMagSolver {
 	
 
 		Vect T=new Vect(NF);
+		Vect R=new Vect(NF);
 		Vect ff=new Vect(NF);
 		for(int kf=0;kf<NF;kf++){
 			
@@ -643,11 +644,12 @@ public class ACMagSolver {
 			
 		T.el[kf]=av2.norm2();///(av1.norm2());
 
-
+	//	R.el[kf]=av2.norm2();
 	//	xc.show();
 		}
 
 		util.plot(ff,T);
+		//util.plot(ff,R);
 
 		for(int i=0;i<ff.length;i++){
 			util.pr(i+"  "+ff.el[i]+"  "+T.el[i]);
