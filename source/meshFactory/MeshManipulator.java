@@ -76,7 +76,7 @@ public class MeshManipulator {
 
 	//	mf.assemble();
 	//	mf.copy(new Vect(.0,-.1), 1);
-	//	mf.rescale(new Vect(1.05,1.05,1));
+	//	mf.rescale(new Vect(1.0,2));
 //	mf.rescale(new Vect(1,10,1));
 //mf.extendFlip(1);
 //	mf.deform();
@@ -88,7 +88,7 @@ public class MeshManipulator {
 	//	mf.rescale(new Vect(1.0,1.0,.25));
 	//mf.cut(-.03,.03,-1,1,0,1);
 		
-	mf.translate(new Vect(.0,.01));
+//	mf.translate(new Vect(.0,.01));
 		//Mat R=util.rotMat(new Vect(1,0,0), new Vect(0,1,0));
 		Mat R=util.rotEuler(new Vect(0,0,1), -90*PI/180);
 	//	mf.rotate(R);
@@ -112,8 +112,8 @@ public class MeshManipulator {
 
 		//mf.revolveLine(vx, regs0, 18, PI/18);
 		//mf.revolveLine(new Vect().linspace(2, 2.1, Nr), regs0, 180, PI/2/45);
-		//int[] regs={1,2};
-	//	mf.extractReg(regs);mf.dropUnusedNodes();
+		int[] regs2={1,3};
+		mf.extractReg(regs2);mf.dropUnusedNodes();
 		//mf.dropUnusedNodes();
 		String stat="D:\\JavaWorks\\FEM problems\\Solver Gaol\\noUnusedNodes.txt";
 		 String rot="D:\\JavaWorks\\FEM problems\\Solver Gaol\\bunTranslated.txt";

@@ -101,6 +101,7 @@ public class Region {
 	
 	public void setSigma(Vect sigma){
 		this.sigma=sigma.deepCopy();
+
 		if(sigma.norm()>0)
 			this.isConductor=true;
 		else

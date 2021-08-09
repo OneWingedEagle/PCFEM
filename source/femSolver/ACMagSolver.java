@@ -55,12 +55,12 @@ public class ACMagSolver {
 		double pcw=0;
 		double f1=model.freq;
 		double f2=model.freq2;
-		int NF=model.fdiv;
+		int NF=model.fdiv+1;
 		double df=0;
 		if(NF==0){
 			NF=1;
 		}else{
-			df=(f2-f1)/NF;	
+			df=(f2-f1)/model.fdiv;	
 		}
 		
 	
@@ -232,7 +232,7 @@ public class ACMagSolver {
 					
 					//model.edge[map[i]].node[0].getCoord().hshow();
 
-					SpVectComp spv=new SpVectComp(model.Ps.row[i].times(1),model.RHS.length);
+					SpVectComp spv=new SpVectComp(model.Ps.row[i].times(-1),model.RHS.length);
 					
 			
 					for(int k=0;k<spv.nzLength;k++)
@@ -314,6 +314,7 @@ public class ACMagSolver {
 
 			
 			Mat Wt=W.transp();
+			
 			util.hshow(Wt.size());
 
 			Mat C =Wt.mul(W).times(1./W.nRow);
@@ -389,7 +390,7 @@ public class ACMagSolver {
 					MatSolver ms = new MatSolver();
 
 					Vect xr = ms.gaussel(C, bt);
-					xr.show();
+				//	xr.show();
 					
 					xc=new VectComp(b.length);
 					
@@ -398,7 +399,7 @@ public class ACMagSolver {
 					for(int k=0;k<bt.length;k++)
 						xc.el[k]=new Complex(xr.el[k],0);
 					
-					util.plot(xr);
+					//util.plot(xr);
 					
 				}else{
 				
@@ -422,8 +423,7 @@ public class ACMagSolver {
 						}
 					}
 				}
-				
-			
+
 				
 				for(int i=0;i<dof;i++){
 					int nz1=Ks.row[i].nzLength;
@@ -447,16 +447,18 @@ public class ACMagSolver {
 			//	Ks2.shownz();
 				
 				//Ks2.shownz();
+				
+				
 				SpMatComp Ks2t=Ks2.transpose(100);
 				for (int i = 0; i < Ks2t.nRow; i++) {
 					
 					int nz1=Ks2t.row[i].nzLength;
 					for(int j=0;j<nz1;j++){
-						Ks2t.row[i].el[j].im*=-1;
+					//	Ks2t.row[i].el[j].im*=-1;
 					}
 				}
 			
-
+				
 				SpMatComp Cs = new SpMatComp(dof, dof); 
 				
 				for (int i = 0; i < Ks2t.nRow; i++) {
@@ -476,12 +478,12 @@ public class ACMagSolver {
 									
 									 spv = new SpVectComp(dof, 100);
 									 
-									 spv1 = Ks2.row[i].deepCopy();
+									 spv1 = Ks2t.row[i].deepCopy();
 									 
 									spv1_filled=true;
 								}
 
-								Complex dot = spv1.dot(Ks2.row[j]);
+								Complex dot = spv1.dot(Ks2t.row[j]);
 								
 
 								if (dot.norm() == 0)
@@ -512,15 +514,8 @@ public class ACMagSolver {
 
 			//	Ks.shownz();
 				
-			//	Mat M1=Ks.matForm()[0];
-			//	M1.show();
-			//	 Eigen eg2=new Eigen(M1);
-				 
-			//	 Vect lam=eg2.lam;
-			//	lam.show();
-
-			//	Mat M2=M1.inv();
-			//	M1.show();
+			//	b.show();
+	
 				int m=b.length;
 
 				
@@ -528,7 +523,7 @@ public class ACMagSolver {
 
 
 
-				SpMatComp Ls=Ks.ichol(1.05);
+				SpMatComp Ls=Ks.ichol(1.0005);
 				
 				Ls.setSymHerm(1); 
 
@@ -575,7 +570,7 @@ public class ACMagSolver {
 
 
 
-		SpMatComp Ls=Ks.ichol(1.2);
+		SpMatComp Ls=Ks.ichol(1.02);
 		
 		Ls.setSymHerm(1); // symmetric but not Hermitian
 

@@ -847,6 +847,7 @@ public class Calculator {
 
 
 		}
+		
 
 		Node[] vertexNode=model.elementNodes(ie);
 		double[][] H1=new double[model.nElEdge][model.nElEdge];

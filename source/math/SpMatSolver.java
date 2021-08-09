@@ -706,6 +706,7 @@ public class SpMatSolver {
 		return blockCG( A, B, errMax, N,new Mat(B.size()), true);
 	}
 	
+	
 	public Mat blockCG(SpMat A,Mat B,double errMax,int N,Mat X, boolean echo){
 		// block CG
 			int I=A.getnRow();

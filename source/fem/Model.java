@@ -2005,13 +2005,15 @@ public double getElementA3ang(int ie,Vect lc){
 		for(int ir=1;ir<=numberOfRegions;ir++){
 
 			boolean regCond=region[ir].isConductor;
+			
+			Vect regSigma=region[ir].getSigma();
 
 			for(int i=region[ir].getFirstEl();i<=region[ir].getLastEl();i++){
 
 					element[i].setNu(region[ir].getNu());
 				
 				if(regCond)
-					element[i].setSigma(region[ir].getSigma());
+					element[i].setSigma(regSigma);
 
 				element[i].setRegion(ir);
 

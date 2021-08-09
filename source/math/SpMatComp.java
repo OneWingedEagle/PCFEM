@@ -439,7 +439,7 @@ public class SpMatComp  {
 	public SpMatComp transpose(int cLmax){
 
 		SpMatComp T=new SpMatComp(getnCol(),nRow,cLmax);
-		int[] nz=new int[nRow];
+		int[] nz=new int[T.nRow];
 		for(int i=0;i<nRow;i++)
 			for(int j=0;j<row[i].nzLength;j++){
 				int cl=row[i].index[j];
