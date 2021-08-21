@@ -488,21 +488,31 @@ public class MagMatAssembler {
 
 		double[] Cj=new double[model.nElEdge];
 
+		double[] Cm=new double[model.nElEdge];
+
 		boolean hasJ=true;
+		boolean hasM=true;
 
 		Vect J=null;
 		double y0=model.spaceBoundary[2];
-
+		double y1=model.spaceBoundary[3];
+		double L=y1-y0;
+		
+		Vect MReg=new Vect(-1./L,0);
 
 		for(int ir=1;ir<=model.numberOfRegions;ir++){
 
 			double eps=model.region[ir].getSigma().el[2];
 			
 			for(int i=model.region[ir].getFirstEl();i<=model.region[ir].getLastEl();i++){
+				
+				model.element[i].setHasM(true);
+				model.element[i].setM(MReg);
+				
 				int[] edgeNumb=model.element[i].getEdgeNumb();
 
 
-				this.calc.He(model,0,0,i,false,false,hasJ,false);
+				this.calc.He(model,0,0,i,false,false,hasJ,hasM);
 
 
 				if(hasJ ){
@@ -510,15 +520,16 @@ public class MagMatAssembler {
 						
 						
 							double y=model.edge[edgeNumb[j]].node[0].getCoord(1)-y0;
-							
+			
 							if(reim==0)
-								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*cos(-pcw*y));
+								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*cos(-pcw*y)*(1-1*y/L));
 							else	if(reim==1)
-								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*sin(-pcw*y));
+								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*sin(-pcw*y)*(1-1*y/L));
 
-
-						if(model.dim==2)
+						if(model.dim==2){
 							Cj[j]=J.el[2]*model.Cj2d[j];
+							Cm[j]=model.C[j];	
+						}
 						else{
 							Cj[j]=J.dot(model.Cj[j]);
 
@@ -542,8 +553,7 @@ public class MagMatAssembler {
 
 					//===========  right-hand side
 		
-			
-						model.RHS.el[matrixRow]+=Cj[j];	
+						model.RHS.el[matrixRow]+=Cj[j]+=Cm[j];	
 
 
 
@@ -847,12 +857,12 @@ public class MagMatAssembler {
 					if((j1>=0 && j2>=0)){ // incident wave at 1st boundary only
 						int n1=model.edge[edgeNumb[j1]].node[0].id;
 						matrixRow=model.nodeVarIndex[n1]-1;
-					///	rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
+						rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
 						rt.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;		
 
 						int n2=model.edge[edgeNumb[j2]].node[0].id;
 						matrixRow=model.nodeVarIndex[n2]-1;
-					///	rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
+						rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
 						rt.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;		
 
 					//	rhs.el[edgeNumb[j1]]=edge_length;	
@@ -865,7 +875,7 @@ public class MagMatAssembler {
 					if((j3>=0 && j4>=0)) {
 						int n1=model.edge[edgeNumb[j3]].node[0].id;
 						matrixRow=model.nodeVarIndex[n1]-1;
-						//rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
+					//	rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
 						rt.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;		
 
 						int n2=model.edge[edgeNumb[j4]].node[0].id;

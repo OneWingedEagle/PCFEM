@@ -31,7 +31,7 @@ public class ACMagSolver {
 		VectComp  b=null;
 		Vect pcrhs=null;
 		model.solver.terminate(false);
-		Vect rhsImag=null;
+	//	Vect rhsImag=null;
 		
 		boolean dense=true;
 
@@ -55,11 +55,12 @@ public class ACMagSolver {
 		double pcw=0;
 		double f1=model.freq;
 		double f2=model.freq2;
-		int NF=model.fdiv+1;
+		int NF=0;
 		double df=0;
-		if(NF==0){
+		if(model.fdiv==0){
 			NF=1;
 		}else{
+			NF=model.fdiv+1;
 			df=(f2-f1)/model.fdiv;	
 		}
 		
@@ -124,12 +125,12 @@ public class ACMagSolver {
 		model.pcw=pcw;
 		if(photonic==2){
 			
-		model.magMat.setRHS_SCAT(model,1);
-		
-		rhsImag=model.RHS.deepCopy();
-	//	rhsImag.show();
-		model.magMat.setRHS_SCAT(model,0);
+		//model.magMat.setRHS_SCAT(model,1);
 		//model.RHS.zero();
+	//	rhsImag=model.RHS.deepCopy();
+	//	rhsImag.show();
+	//	model.magMat.setRHS_SCAT(model,0);
+	//	model.RHS.zero();
 		
 		 Ks=new SpMatComp(model.Hs.addSmallerNew(model.Ss.timesNew(-pcw2)),model.Ss.timesNew(0));
 		}else {
@@ -240,7 +241,6 @@ public class ACMagSolver {
 					{
 
 						if(spv.index[k]==indx){
-							//spv.el[k]=spv.el[k].add(new Complex(-rt.el[i+nuned],0).times(pcw));
 							spv.el[k]=spv.el[k].add(new Complex(rt.el[i+nuned],0).times(jpcw));
 						}
 					}
@@ -271,7 +271,7 @@ public class ACMagSolver {
 		
 		
 		if(photonic==0 || photonic==2)
-			b=new VectComp(model.RHS,rhsImag);
+			b=new VectComp(model.RHS);
 		else
 		 b=new VectComp(model.RHS.aug(new Vect(nb)));
 		
@@ -281,10 +281,8 @@ public class ACMagSolver {
 				int nuned=model.numberOfUnknownEdges;
 				for(int i=0;i<model.numberOfVarNodes;i++){
 			
-				//	b.el[i+nuned]=b.el[i+nuned].add(new Complex(pcrhs.el[i+nuned],0));
-				//	b.el[i+nuned]=b.el[i+nuned].add(new Complex(0,pcrhs.el[i+nuned]));
-				
-			//	b.el[i+nuned]=b.el[i+nuned].add(new Complex(0,pcw*pcrhs.el[i+nuned]));
+			
+				b.el[i+nuned]=b.el[i+nuned].add(new Complex(0,pcw*pcrhs.el[i+nuned]));
 				}
 
 			 }
@@ -602,15 +600,19 @@ public class ACMagSolver {
 		
 	//	xc.show();	
 		double y0=model.spaceBoundary[2];
+		double y1=model.spaceBoundary[3];
+		double L=y1-y0;
 		
 		for(int i=0;i<model.numberOfUnknownEdges;i++){	
 			
 			int iedge=model.unknownEdgeNumber[i+1];
 			double y=model.edge[iedge].node[0].getCoord(1)-y0;
-			double E0r=cos(-pcw*y);
-			double E0m=sin(-pcw*y);
-			xc.el[i].re+=E0r;
-			xc.el[i].im+=E0m;
+		
+			double E0r=cos(-pcw*y)*(1-1*y/L);
+			double E0m=sin(-pcw*y)*(1-1*y/L);
+		//	xc.el[i].re+=E0r;
+		//	xc.el[i].im+=E0m;
+			
 		}
 	
 		

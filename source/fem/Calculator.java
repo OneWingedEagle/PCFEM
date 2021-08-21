@@ -231,7 +231,7 @@ public class Calculator {
 					for(int i=0;i<model.nElEdge;i++){
 						
 						
-				if(hasJ){
+					  if(hasJ){
 
 							Cj[i]=Cj[i].add(Ne[i].times(wsJ));
 						}
@@ -278,13 +278,6 @@ public class Calculator {
 		model.Cj=Cj;
 
 
-/*		if(ie==1 ||model.element[ie].getRegion()==-1){
-		//	util.pr("elem "+ie);
-		//	util.hshow(model.element[ie].getEdgeNumb());
-		//	util.show(H1);
-		//	new Mat(H1).diagonal().show();
-		}
-*/
 		return H1;
 
 

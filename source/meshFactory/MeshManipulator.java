@@ -65,20 +65,20 @@ public class MeshManipulator {
 	//	mf.deform();
 	//	util.plot(cc);
 		//mf.extractReg(regs);mf.dropUnusedNodes();
-	//	mf.translate(new Vect(0,.0,.005));
+		mf.translate(new Vect(0,10));
 		//Model model=new Model("D:\\JavaWorks\\FEM problems\\Hamed solver\\bun1elem.txt");
 		//model.setEdge();
 //	mf.reRegionb();
-		int[] nrs={1};
+	//	int[] nrs={1};
 	//mf.connectivity(1e-5);
 //	mf.dropUnusedNodes();
 	//	mf.dropUnusedNodes();
 
 	//	mf.assemble();
 	//	mf.copy(new Vect(.0,-.1), 1);
-	//	mf.rescale(new Vect(1.0,2));
+	//	mf.rescale(new Vect(1.0,.25));
 //	mf.rescale(new Vect(1,10,1));
-//mf.extendFlip(1);
+//		mf.extendFlip(1);
 //	mf.deform();
 	//mf.rescale(1./500);
 	//mf.rotate(-90*PI/180);
@@ -112,8 +112,8 @@ public class MeshManipulator {
 
 		//mf.revolveLine(vx, regs0, 18, PI/18);
 		//mf.revolveLine(new Vect().linspace(2, 2.1, Nr), regs0, 180, PI/2/45);
-		int[] regs2={1,3};
-		mf.extractReg(regs2);mf.dropUnusedNodes();
+		//int[] regs2={1,3};
+		//mf.extractReg(regs2);mf.dropUnusedNodes();
 		//mf.dropUnusedNodes();
 		String stat="D:\\JavaWorks\\FEM problems\\Solver Gaol\\noUnusedNodes.txt";
 		 String rot="D:\\JavaWorks\\FEM problems\\Solver Gaol\\bunTranslated.txt";
