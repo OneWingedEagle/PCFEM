@@ -1,6 +1,5 @@
 package main;
 import math.*;
-import static java.lang.Math.*;
 import io.Console;
 
 import java.awt.Color;
@@ -11,18 +10,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.JOptionPane;
-
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
 
 import components.GUI;
 import fem.Model;
