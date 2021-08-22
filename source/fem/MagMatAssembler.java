@@ -1061,7 +1061,195 @@ public class MagMatAssembler {
 		return Ps;
 	}
 
+
+	private  SpMat getPsSCAT2(Model model, int reim){
+				
+		double pcw=model.pcw;
+		double E0=model.E0;
+
+		int matrixRow=0, rowEdgeNumb;
+
+		double[] Cj=new double[model.nElEdge];
+
+		double[] Cm=new double[model.nElEdge];
+
+		boolean hasJ=true;
+		boolean hasM=true;
+
+		Vect J=null;
+		double y0=model.spaceBoundary[2];
+		double y1=model.spaceBoundary[3];
+		double L=y1-y0;
+		
+		Vect MReg=new Vect(1,0);
+		
+		double mfactor=0;
+
+		for(int ir=1;ir<=model.numberOfRegions;ir++){
+
+			double eps=model.region[ir].getSigma().el[2];
+			
+			for(int i=model.region[ir].getFirstEl();i<=model.region[ir].getLastEl();i++){
+				
+				model.element[i].setHasM(true);
+				model.element[i].setM(MReg);
+				
+				int[] edgeNumb=model.element[i].getEdgeNumb();
+
+
+				this.calc.He(model,0,0,i,false,false,hasJ,hasM);
+
+
+				if(hasJ ){
+					for(int j=0;j<model.nElEdge;j++){
+						
+						
+							double y=model.edge[edgeNumb[j]].node[0].getCoord(1)-y0;
+			
+							if(reim==0){
+								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*cos(pcw*y)*(1-1*y/L));
+								
+								mfactor=(-1./L)*cos(pcw*y)-pcw*(1-1*y/L)*sin(pcw*y);
+								}
+							else	if(reim==1){
+								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*sin(pcw*y)*(1-1*y/L));
+								mfactor=(-1./L)*sin(pcw*y)+pcw*(1-1*y/L)*cos(pcw*y);
+							}
+
+						if(model.dim==2){
+							Cj[j]=J.el[2]*model.Cj2d[j];
+							Cm[j]=model.C[j]*mfactor;	
+						}
+						else{
+							Cj[j]=J.dot(model.Cj[j]);
+
+						}
+
+
+					}
+
+				}
+
+
+
+				for(int j=0;j<model.nElEdge;j++){
+					rowEdgeNumb=edgeNumb[j];
+
+					if(model.edge[rowEdgeNumb].edgeKnown ) continue;
+
+
+					matrixRow=model.edgeUnknownIndex[rowEdgeNumb]-1;
+
+
+					//===========  right-hand side
+		
+						model.RHS.el[matrixRow]+=Cj[j]+=Cm[j];	
+
+
+
+				}
+			}
+		}
+		
+		
+
+		double ePs=1e-12;
+		double[][] He;
+
+		int ext=6;
+
+		int m,edgeNumber,nodeNumber,columnIndex,matrixRow;
+		int[] nz=new int[model.numberOfVarNodes];
+
+		SpMat Ps=new SpMat(model.numberOfVarNodes, model.numberOfUnknownEdges,model.nNodEd);
+
+		for(int ir=1;ir<=model.numberOfRegions;ir++){
+
+			for(int i=model.region[ir].getFirstEl();i<=model.region[ir].getLastEl();i++){
+
+
+				int[] vertNumb=model.element[i].getVertNumb();
+				int[] edgeNumb=model.element[i].getEdgeNumb();
+				
+				
+				boolean has_scattering=false;
+				int num_edge_scat=0;
+				for(int j=0;j<model.nElEdge;j++){
+					int edgNum=edgeNumb[j];
+					if(model.edge[edgNum].incident /*|| model.edge[edgNum].exist*/){
+						num_edge_scat++;
+						if(num_edge_scat>1){
+							has_scattering=true;
+						break;
+						}
+					}
+				}
+				if(!has_scattering){
+					for(int j=0;j<model.nElEdge;j++){
+						int edgNum=edgeNumb[j];
+						if(model.edge[edgNum].exit /*|| model.edge[edgNum].exist*/){
+							num_edge_scat++;
+							if(num_edge_scat>1){
+								has_scattering=true;
+							break;
+							}
+						}
+					}
+				}
+				
+				if(!has_scattering) continue;
+				
 	
+				He=this.calc.NiRotNj(model,i);
+	
+		
+				for(int j=0;j<model.nElVert;j++){
+					nodeNumber=vertNumb[j];
+				
+					matrixRow=model.nodeVarIndex[nodeNumber]-1;
+					if(matrixRow<0) continue;
+					for(int k=0;k<model.nElEdge;k++){		
+						edgeNumber=edgeNumb[k];
+						if(model.edge[edgeNumber].edgeKnown) continue;
+
+						columnIndex=model.edgeUnknownIndex[edgeNumber]-1;
+						if(columnIndex<0) continue;
+						
+						if(columnIndex>model.numberOfUnknownEdges+matrixRow) continue;
+						
+						m=util.search(Ps.row[matrixRow].index,nz[matrixRow]-1,columnIndex);
+						if(m<0)
+						{	
+							if(abs(He[j][k])>ePs ){
+								Ps.row[matrixRow].index[nz[matrixRow]]=columnIndex;
+								Ps.row[matrixRow].el[nz[matrixRow]++]=He[j][k];
+								//===========================
+								if(nz[matrixRow]==Ps.row[matrixRow].nzLength-1){
+									Ps.row[matrixRow].extend(ext);
+								}
+								//===========================
+							}
+
+						}
+
+						else{
+
+							Ps.row[matrixRow].addToNz(He[j][k],m);
+						}
+
+					}			
+				}
+			}
+		}
+		Ps.sortAndTrim(nz);
+
+
+
+		return Ps;
+	}
+
+	
+
 
 	private double hatFunc(double tt,int px,double W,double period){
 		double result=0;
