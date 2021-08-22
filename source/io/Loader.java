@@ -775,6 +775,13 @@ public class Loader {
 				bct=3;
 				pair=Integer.parseInt(sp[ib+1])-1;
 			}
+		else if(line.startsWith("Y1")){
+
+			bct=-2;
+		}
+		else if(line.startsWith("Y2")){
+			bct=-3;
+		}
 		else{
 
 			bct=0;
@@ -782,7 +789,7 @@ public class Loader {
 		
 		bctp[0]=bct;
 		bctp[1]=pair;
-		
+			
 		return bctp;
 	}
 

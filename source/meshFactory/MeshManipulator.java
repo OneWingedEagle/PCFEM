@@ -65,7 +65,7 @@ public class MeshManipulator {
 	//	mf.deform();
 	//	util.plot(cc);
 		//mf.extractReg(regs);mf.dropUnusedNodes();
-		mf.translate(new Vect(0,10));
+		//mf.translate(new Vect(0,10));
 		//Model model=new Model("D:\\JavaWorks\\FEM problems\\Hamed solver\\bun1elem.txt");
 		//model.setEdge();
 //	mf.reRegionb();
@@ -76,7 +76,7 @@ public class MeshManipulator {
 
 	//	mf.assemble();
 	//	mf.copy(new Vect(.0,-.1), 1);
-	//	mf.rescale(new Vect(1.0,.25));
+		mf.rescale(new Vect(1,5.0));
 //	mf.rescale(new Vect(1,10,1));
 //		mf.extendFlip(1);
 //	mf.deform();

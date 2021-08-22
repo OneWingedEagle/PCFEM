@@ -387,8 +387,14 @@ public class BoundarySet {
 			
 			for(int i=1;i<=model.numberOfEdges;i++){
 				for(int j=0;j<model.nBoundary;j++){
-					if(model.BCtype[j]==1 && model.edge[i].node[0].onBound[j] && 
+					if((model.BCtype[j]==1 || model.BCtype[j]==-2 || model.BCtype[j]==-3 )&& model.edge[i].node[0].onBound[j] && 
 							model.edge[i].node[1].onBound[j]){
+						
+						if( model.BCtype[j]==-2)
+							model.edge[i].incident=true;
+						else if( model.BCtype[j]==-3)
+							model.edge[i].incident=true;
+						
 						model.edge[i].setKnownA(0);
 						nDirichlet++;
 						break;					
@@ -407,31 +413,6 @@ public class BoundarySet {
 
 			}
 		
-		if(model.photonic>0){
-
-			
-			for(int i=1;i<=model.numberOfEdges;i++){
-		//	if(model.edge[i].edgeKnown) continue;
-			
-
-			//if(model.edge[i].node[0].getCoord(0)>.004) continue;
-
-			if(/*model.edge[i].node[0].onBound[0] ||*/model.edge[i].node[0].onBound[2]){
-
-			
-				
-				model.edge[i].incident=true;
-
-			}
-
-			else if(/*model.edge[i].node[0].onBound[1] || */model.edge[i].node[0].onBound[3]){
-
-			
-					model.edge[i].exit=true;
-			}
-			
-		}
-		}	
 		
 		for(int i=1;i<=model.numberOfEdges;i++){
 			int mp=model.edge[i].map;
