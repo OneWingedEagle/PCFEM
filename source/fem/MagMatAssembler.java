@@ -498,7 +498,9 @@ public class MagMatAssembler {
 		double y1=model.spaceBoundary[3];
 		double L=y1-y0;
 		
-		Vect MReg=new Vect(-1./L,0);
+	Vect MReg=new Vect(1,0);
+		
+		double mfactor=0;
 
 		for(int ir=1;ir<=model.numberOfRegions;ir++){
 
@@ -521,14 +523,19 @@ public class MagMatAssembler {
 						
 							double y=model.edge[edgeNumb[j]].node[0].getCoord(1)-y0;
 			
-							if(reim==0)
-								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*cos(-pcw*y)*(1-1*y/L));
-							else	if(reim==1)
-								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*sin(-pcw*y)*(1-1*y/L));
+							if(reim==0){
+								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*cos(pcw*y)*(1-1*y/L));
+								
+								mfactor=(-1./L)*cos(pcw*y)-pcw*(1-1*y/L)*sin(pcw*y);
+								}
+							else	if(reim==1){
+								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*sin(pcw*y)*(1-1*y/L));
+								mfactor=(-1./L)*sin(pcw*y)+pcw*(1-1*y/L)*cos(pcw*y);
+							}
 
 						if(model.dim==2){
 							Cj[j]=J.el[2]*model.Cj2d[j];
-							Cm[j]=model.C[j];	
+							Cm[j]=model.C[j]*mfactor;	
 						}
 						else{
 							Cj[j]=J.dot(model.Cj[j]);
@@ -560,6 +567,7 @@ public class MagMatAssembler {
 				}
 			}
 		}
+		
 
 
 	}
@@ -1063,12 +1071,23 @@ public class MagMatAssembler {
 
 
 	private  SpMat getPsSCAT2(Model model, int reim){
+		
+		int ntr=2;
 				
 		double pcw=model.pcw;
 		double E0=model.E0;
 
-		int matrixRow=0, rowEdgeNumb;
+		double ePs=1e-12;
+		double[][] He;
 
+		int ext=6;
+
+		int m,edgeNumber,nodeNumber,columnIndex,matrixRow;
+		int[] nz=new int[ntr];
+
+		SpMat Ps=new SpMat(ntr, model.numberOfUnknownEdges, model.numberOfUnknownEdges);
+
+		
 		double[] Cj=new double[model.nElEdge];
 
 		double[] Cm=new double[model.nElEdge];
@@ -1082,8 +1101,9 @@ public class MagMatAssembler {
 		double L=y1-y0;
 		
 		Vect MReg=new Vect(1,0);
-		
-		double mfactor=0;
+		double mfactorE=0;
+		double mfactorR=0;
+		double mfactorT=0;
 
 		for(int ir=1;ir<=model.numberOfRegions;ir++){
 
@@ -1109,12 +1129,21 @@ public class MagMatAssembler {
 							if(reim==0){
 								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*cos(pcw*y)*(1-1*y/L));
 								
-								mfactor=(-1./L)*cos(pcw*y)-pcw*(1-1*y/L)*sin(pcw*y);
+								mfactorE=(-1./L)*cos(pcw*y)-pcw*(1-1*y/L)*sin(pcw*y);
+								mfactorR=(-1./L)*cos(-pcw*y)-pcw*(1-1*y/L)*sin(-pcw*y);
+								mfactorT=(1./L)*cos(pcw*y)-pcw*(y/L)*sin(pcw*y);
 								}
 							else	if(reim==1){
 								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*sin(pcw*y)*(1-1*y/L));
-								mfactor=(-1./L)*sin(pcw*y)+pcw*(1-1*y/L)*cos(pcw*y);
+								
+								mfactorE=(-1./L)*sin(pcw*y)+pcw*(1-1*y/L)*cos(pcw*y);
+								mfactorR=(-1./L)*sin(-pcw*y)+pcw*(1-1*y/L)*cos(-pcw*y);
+								mfactorT=(1./L)*sin(pcw*y)+pcw*(y/L)*cos(pcw*y);
+								
 							}
+							
+							double coefR=model.Cj2d[j]+model.C[j]*mfactorR;
+							double coefT=model.Cj2d[j]+model.C[j]*mfactorR;
 
 						if(model.dim==2){
 							Cj[j]=J.el[2]*model.Cj2d[j];
@@ -1132,13 +1161,33 @@ public class MagMatAssembler {
 
 
 
+				matrixRow=model.edgeUnknownIndex[rowEdgeNumb]-1;
+
 				for(int j=0;j<model.nElEdge;j++){
-					rowEdgeNumb=edgeNumb[j];
+					int rowEdgeNumb=edgeNumb[j];
 
 					if(model.edge[rowEdgeNumb].edgeKnown ) continue;
 
+					m=util.search(Ps.row[matrixRow].index,nz[matrixRow]-1,columnIndex);
+					if(m<0)
+					{	
+						if(abs(He[j][k])>ePs ){
+							Ps.row[matrixRow].index[nz[matrixRow]]=columnIndex;
+							Ps.row[matrixRow].el[nz[matrixRow]++]=He[j][k];
+							//===========================
+							if(nz[matrixRow]==Ps.row[matrixRow].nzLength-1){
+								Ps.row[matrixRow].extend(ext);
+							}
+							//===========================
+						}
 
-					matrixRow=model.edgeUnknownIndex[rowEdgeNumb]-1;
+					}
+
+					else{
+
+						Ps.row[matrixRow].addToNz(He[j][k],m);
+					}
+
 
 
 					//===========  right-hand side
@@ -1151,96 +1200,6 @@ public class MagMatAssembler {
 			}
 		}
 		
-		
-
-		double ePs=1e-12;
-		double[][] He;
-
-		int ext=6;
-
-		int m,edgeNumber,nodeNumber,columnIndex,matrixRow;
-		int[] nz=new int[model.numberOfVarNodes];
-
-		SpMat Ps=new SpMat(model.numberOfVarNodes, model.numberOfUnknownEdges,model.nNodEd);
-
-		for(int ir=1;ir<=model.numberOfRegions;ir++){
-
-			for(int i=model.region[ir].getFirstEl();i<=model.region[ir].getLastEl();i++){
-
-
-				int[] vertNumb=model.element[i].getVertNumb();
-				int[] edgeNumb=model.element[i].getEdgeNumb();
-				
-				
-				boolean has_scattering=false;
-				int num_edge_scat=0;
-				for(int j=0;j<model.nElEdge;j++){
-					int edgNum=edgeNumb[j];
-					if(model.edge[edgNum].incident /*|| model.edge[edgNum].exist*/){
-						num_edge_scat++;
-						if(num_edge_scat>1){
-							has_scattering=true;
-						break;
-						}
-					}
-				}
-				if(!has_scattering){
-					for(int j=0;j<model.nElEdge;j++){
-						int edgNum=edgeNumb[j];
-						if(model.edge[edgNum].exit /*|| model.edge[edgNum].exist*/){
-							num_edge_scat++;
-							if(num_edge_scat>1){
-								has_scattering=true;
-							break;
-							}
-						}
-					}
-				}
-				
-				if(!has_scattering) continue;
-				
-	
-				He=this.calc.NiRotNj(model,i);
-	
-		
-				for(int j=0;j<model.nElVert;j++){
-					nodeNumber=vertNumb[j];
-				
-					matrixRow=model.nodeVarIndex[nodeNumber]-1;
-					if(matrixRow<0) continue;
-					for(int k=0;k<model.nElEdge;k++){		
-						edgeNumber=edgeNumb[k];
-						if(model.edge[edgeNumber].edgeKnown) continue;
-
-						columnIndex=model.edgeUnknownIndex[edgeNumber]-1;
-						if(columnIndex<0) continue;
-						
-						if(columnIndex>model.numberOfUnknownEdges+matrixRow) continue;
-						
-						m=util.search(Ps.row[matrixRow].index,nz[matrixRow]-1,columnIndex);
-						if(m<0)
-						{	
-							if(abs(He[j][k])>ePs ){
-								Ps.row[matrixRow].index[nz[matrixRow]]=columnIndex;
-								Ps.row[matrixRow].el[nz[matrixRow]++]=He[j][k];
-								//===========================
-								if(nz[matrixRow]==Ps.row[matrixRow].nzLength-1){
-									Ps.row[matrixRow].extend(ext);
-								}
-								//===========================
-							}
-
-						}
-
-						else{
-
-							Ps.row[matrixRow].addToNz(He[j][k],m);
-						}
-
-					}			
-				}
-			}
-		}
 		Ps.sortAndTrim(nz);
 
 
