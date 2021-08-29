@@ -479,10 +479,14 @@ public class MagMatAssembler {
 	
 	public void setRHS_SCAT(Model model,int reim){		
 
+
 		model.RHS=new Vect(model.numberOfUnknowns);
 		
 		double pcw=model.pcw;
+		double pcw2=pcw*pcw;
 		double E0=model.E0;
+		double R0=model.R0;
+		double T0=model.T0;
 
 		int matrixRow=0, rowEdgeNumb;
 
@@ -524,18 +528,50 @@ public class MagMatAssembler {
 							double y=model.edge[edgeNumb[j]].node[0].getCoord(1)-y0;
 			
 							if(reim==0){
-								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*cos(pcw*y)*(1-1*y/L));
 								
-								mfactor=(-1./L)*cos(pcw*y)-pcw*(1-1*y/L)*sin(pcw*y);
+								double E0r=E0*cos(pcw*y)*(1-y/L);
+								
+								double R0r= R0*cos(-pcw*y)*(1-y/L);
+								
+								double T0r=T0*cos(pcw*(y-L))*(y/L);
+								
+								double Jz=-eps*pcw*pcw*(E0r+R0r+T0r);
+								
+								J=new Vect(0, 0, Jz);
+								
+								mfactor=E0*(pcw2*(1-y/L)*cos(pcw*y)-2*pcw/L*sin(pcw*y))+
+										R0*(pcw2*(1-y/L)*cos(-pcw*y)+2*pcw/L*sin(-pcw*y))+
+										T0*(pcw2*(y/L)*cos(pcw*(y-L))-2*pcw/L*sin(pcw*(y-L)));
+								
+
 								}
-							else	if(reim==1){
-								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*sin(pcw*y)*(1-1*y/L));
-								mfactor=(-1./L)*sin(pcw*y)+pcw*(1-1*y/L)*cos(pcw*y);
-							}
+							else if(reim==1){
+								double E0m=E0*sin(pcw*y)*(1-y/L);
+								double R0m=R0*sin(-pcw*y)*(1-y/L);
+								double T0m=T0*sin(pcw*(y-L))*(y/L);
+
+								double Jz=-eps*pcw*pcw*(E0m+R0m+T0m);
+								
+							
+								
+								J=new Vect(0, 0, Jz);
+								
+								mfactor=E0*(pcw2*(1-y/L)*sin(pcw*y)+2*pcw/L*cos(pcw*y))+
+										R0*(pcw2*(1-y/L)*sin(-pcw*y)+2*pcw/L*cos(-pcw*y))+
+										T0*(pcw2*(y/L)*sin(pcw*(y-L))-2*pcw/L*cos(pcw*(y-L)));
+
+								//util.pr(J.el[2]+"   "+mfactor);
+
+								}
+							
+							J.el[2]+=mfactor;
+							
 
 						if(model.dim==2){
 							Cj[j]=J.el[2]*model.Cj2d[j];
-							Cm[j]=model.C[j]*mfactor;	
+							//Cm[j]=model.C[j]*mfactor;	
+							
+						
 						}
 						else{
 							Cj[j]=J.dot(model.Cj[j]);
@@ -560,7 +596,7 @@ public class MagMatAssembler {
 
 					//===========  right-hand side
 		
-						model.RHS.el[matrixRow]+=Cj[j]+=Cm[j];	
+						model.RHS.el[matrixRow]+=Cj[j];//+Cm[j];	
 
 
 
@@ -568,6 +604,82 @@ public class MagMatAssembler {
 			}
 		}
 		
+
+	}
+	
+	public void setRHS_SCAT2(Model model,int reim){		
+
+		model.RHS=new Vect(model.numberOfUnknowns);
+		
+		double pcw=model.pcw;
+		double E0=model.E0;
+
+		int matrixRow=0, rowEdgeNumb;
+
+		double[] Cj=new double[model.nElEdge];
+
+		boolean hasJ=true;
+
+		Vect J=null;
+		double y0=model.spaceBoundary[2];
+
+
+		for(int ir=1;ir<=model.numberOfRegions;ir++){
+
+			double eps=model.region[ir].getSigma().el[2];
+			
+			for(int i=model.region[ir].getFirstEl();i<=model.region[ir].getLastEl();i++){
+				int[] edgeNumb=model.element[i].getEdgeNumb();
+
+
+				this.calc.He(model,0,0,i,false,false,hasJ,false);
+
+
+				if(hasJ ){
+					for(int j=0;j<model.nElEdge;j++){
+						
+						
+							double y=model.edge[edgeNumb[j]].node[0].getCoord(1)-y0;
+							
+							if(reim==0)
+								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*cos(-pcw*y));
+							else	if(reim==1)
+								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*sin(-pcw*y));
+
+
+						if(model.dim==2)
+							Cj[j]=J.el[2]*model.Cj2d[j];
+						else{
+							Cj[j]=J.dot(model.Cj[j]);
+
+						}
+
+
+					}
+
+				}
+
+
+
+				for(int j=0;j<model.nElEdge;j++){
+					rowEdgeNumb=edgeNumb[j];
+
+					if(model.edge[rowEdgeNumb].edgeKnown ) continue;
+
+
+					matrixRow=model.edgeUnknownIndex[rowEdgeNumb]-1;
+
+
+					//===========  right-hand side
+		
+			
+						model.RHS.el[matrixRow]+=Cj[j];	
+
+
+
+				}
+			}
+		}
 
 
 	}
@@ -707,6 +819,9 @@ public class MagMatAssembler {
 	}
 	
 	private  SpMat getQsSCAT(Model model){
+		
+		if(model.numberOfVarNodes==0) return null;
+
 
 		double eps=1e-16;
 		Mat He;
@@ -803,6 +918,9 @@ public class MagMatAssembler {
 
 
 	public  void addRHS_SCAT(Model model,Vect rhs, Vect rt){
+		
+		if(model.numberOfVarNodes==0) return;
+
 
 		int[] counted1=new int[model.numberOfNodes+1];
 		int[] counted2=new int[model.numberOfNodes+1];
@@ -865,16 +983,16 @@ public class MagMatAssembler {
 					if((j1>=0 && j2>=0)){ // incident wave at 1st boundary only
 						int n1=model.edge[edgeNumb[j1]].node[0].id;
 						matrixRow=model.nodeVarIndex[n1]-1;
-						rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
+					//	rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
+					
 						rt.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;		
 
 						int n2=model.edge[edgeNumb[j2]].node[0].id;
 						matrixRow=model.nodeVarIndex[n2]-1;
-						rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
+						//rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
 						rt.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;		
 
-					//	rhs.el[edgeNumb[j1]]=edge_length;	
-					//	rhs.el[edgeNumb[j2]]=edge_length;	
+	
 						counted1[n1]++;
 						counted1[n2]++;
 					}
@@ -883,7 +1001,7 @@ public class MagMatAssembler {
 					if((j3>=0 && j4>=0)) {
 						int n1=model.edge[edgeNumb[j3]].node[0].id;
 						matrixRow=model.nodeVarIndex[n1]-1;
-					//	rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
+						//rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
 						rt.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;		
 
 						int n2=model.edge[edgeNumb[j4]].node[0].id;
@@ -973,6 +1091,8 @@ public class MagMatAssembler {
 	}
 
 	private  SpMat getPsSCAT(Model model){
+		
+		if(model.numberOfVarNodes==0) return null;
 
 		double ePs=1e-12;
 		double[][] He;
@@ -1069,146 +1189,7 @@ public class MagMatAssembler {
 		return Ps;
 	}
 
-
-	private  SpMat getPsSCAT2(Model model, int reim){
-		
-		int ntr=2;
-				
-		double pcw=model.pcw;
-		double E0=model.E0;
-
-		double ePs=1e-12;
-		double[][] He;
-
-		int ext=6;
-
-		int m,edgeNumber,nodeNumber,columnIndex,matrixRow;
-		int[] nz=new int[ntr];
-
-		SpMat Ps=new SpMat(ntr, model.numberOfUnknownEdges, model.numberOfUnknownEdges);
-
-		
-		double[] Cj=new double[model.nElEdge];
-
-		double[] Cm=new double[model.nElEdge];
-
-		boolean hasJ=true;
-		boolean hasM=true;
-
-		Vect J=null;
-		double y0=model.spaceBoundary[2];
-		double y1=model.spaceBoundary[3];
-		double L=y1-y0;
-		
-		Vect MReg=new Vect(1,0);
-		double mfactorE=0;
-		double mfactorR=0;
-		double mfactorT=0;
-
-		for(int ir=1;ir<=model.numberOfRegions;ir++){
-
-			double eps=model.region[ir].getSigma().el[2];
-			
-			for(int i=model.region[ir].getFirstEl();i<=model.region[ir].getLastEl();i++){
-				
-				model.element[i].setHasM(true);
-				model.element[i].setM(MReg);
-				
-				int[] edgeNumb=model.element[i].getEdgeNumb();
-
-
-				this.calc.He(model,0,0,i,false,false,hasJ,hasM);
-
-
-				if(hasJ ){
-					for(int j=0;j<model.nElEdge;j++){
-						
-						
-							double y=model.edge[edgeNumb[j]].node[0].getCoord(1)-y0;
-			
-							if(reim==0){
-								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*cos(pcw*y)*(1-1*y/L));
-								
-								mfactorE=(-1./L)*cos(pcw*y)-pcw*(1-1*y/L)*sin(pcw*y);
-								mfactorR=(-1./L)*cos(-pcw*y)-pcw*(1-1*y/L)*sin(-pcw*y);
-								mfactorT=(1./L)*cos(pcw*y)-pcw*(y/L)*sin(pcw*y);
-								}
-							else	if(reim==1){
-								J=new Vect(0, 0, (1-eps)*pcw*pcw*E0*sin(pcw*y)*(1-1*y/L));
-								
-								mfactorE=(-1./L)*sin(pcw*y)+pcw*(1-1*y/L)*cos(pcw*y);
-								mfactorR=(-1./L)*sin(-pcw*y)+pcw*(1-1*y/L)*cos(-pcw*y);
-								mfactorT=(1./L)*sin(pcw*y)+pcw*(y/L)*cos(pcw*y);
-								
-							}
-							
-							double coefR=model.Cj2d[j]+model.C[j]*mfactorR;
-							double coefT=model.Cj2d[j]+model.C[j]*mfactorR;
-
-						if(model.dim==2){
-							Cj[j]=J.el[2]*model.Cj2d[j];
-							Cm[j]=model.C[j]*mfactor;	
-						}
-						else{
-							Cj[j]=J.dot(model.Cj[j]);
-
-						}
-
-
-					}
-
-				}
-
-
-
-				matrixRow=model.edgeUnknownIndex[rowEdgeNumb]-1;
-
-				for(int j=0;j<model.nElEdge;j++){
-					int rowEdgeNumb=edgeNumb[j];
-
-					if(model.edge[rowEdgeNumb].edgeKnown ) continue;
-
-					m=util.search(Ps.row[matrixRow].index,nz[matrixRow]-1,columnIndex);
-					if(m<0)
-					{	
-						if(abs(He[j][k])>ePs ){
-							Ps.row[matrixRow].index[nz[matrixRow]]=columnIndex;
-							Ps.row[matrixRow].el[nz[matrixRow]++]=He[j][k];
-							//===========================
-							if(nz[matrixRow]==Ps.row[matrixRow].nzLength-1){
-								Ps.row[matrixRow].extend(ext);
-							}
-							//===========================
-						}
-
-					}
-
-					else{
-
-						Ps.row[matrixRow].addToNz(He[j][k],m);
-					}
-
-
-
-					//===========  right-hand side
-		
-						model.RHS.el[matrixRow]+=Cj[j]+=Cm[j];	
-
-
-
-				}
-			}
-		}
-		
-		Ps.sortAndTrim(nz);
-
-
-
-		return Ps;
-	}
-
 	
-
 
 	private double hatFunc(double tt,int px,double W,double period){
 		double result=0;
