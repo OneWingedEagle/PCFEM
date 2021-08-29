@@ -529,7 +529,7 @@ public class MagMatAssembler {
 			
 							if(reim==0){
 								
-								double E0r=E0*cos(pcw*y)*(1-y/L);
+								double E0r=E0*cos(pcw*y)*(1-1*y/L);
 								
 								double R0r= R0*cos(-pcw*y)*(1-y/L);
 								
@@ -543,10 +543,12 @@ public class MagMatAssembler {
 										R0*(pcw2*(1-y/L)*cos(-pcw*y)+2*pcw/L*sin(-pcw*y))+
 										T0*(pcw2*(y/L)*cos(pcw*(y-L))-2*pcw/L*sin(pcw*(y-L)));
 								
+							//	mfactor=E0*(pcw2*cos(pcw*y));
+								
 
 								}
 							else if(reim==1){
-								double E0m=E0*sin(pcw*y)*(1-y/L);
+								double E0m=E0*sin(pcw*y)*(1-1*y/L);
 								double R0m=R0*sin(-pcw*y)*(1-y/L);
 								double T0m=T0*sin(pcw*(y-L))*(y/L);
 
@@ -560,6 +562,8 @@ public class MagMatAssembler {
 										R0*(pcw2*(1-y/L)*sin(-pcw*y)+2*pcw/L*cos(-pcw*y))+
 										T0*(pcw2*(y/L)*sin(pcw*(y-L))-2*pcw/L*cos(pcw*(y-L)));
 
+							//	mfactor=E0*(pcw2*sin(pcw*y));
+								
 								//util.pr(J.el[2]+"   "+mfactor);
 
 								}

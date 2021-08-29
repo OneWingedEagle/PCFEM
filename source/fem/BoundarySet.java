@@ -246,7 +246,7 @@ public class BoundarySet {
 
 		}else if(model.photonic==2){
 
-				model.nodeVarIndex=new int[model.numberOfNodes+1];
+/*				model.nodeVarIndex=new int[model.numberOfNodes+1];
 
 				
 				for(int i=1;i<=model.numberOfEdges;i++)
@@ -282,7 +282,7 @@ public class BoundarySet {
 						model.varNodeNumber[++nnx]=i;
 					}
 				}
-
+*/
 			
 
 		}
@@ -387,13 +387,18 @@ public class BoundarySet {
 			
 			for(int i=1;i<=model.numberOfEdges;i++){
 				for(int j=0;j<model.nBoundary;j++){
+			
 					if((model.BCtype[j]==1 || model.BCtype[j]==-2 || model.BCtype[j]==-3 )&& model.edge[i].node[0].onBound[j] && 
 							model.edge[i].node[1].onBound[j]){
 						
-						if( model.BCtype[j]==-2)
+						if( model.BCtype[j]==-2){
 							model.edge[i].incident=true;
-						else if( model.BCtype[j]==-3)
-							model.edge[i].incident=true;
+							continue;
+						}
+						else if( model.BCtype[j]==-3){
+							model.edge[i].exit=true;
+							continue;
+						}
 						
 						model.edge[i].setKnownA(0);
 						nDirichlet++;
@@ -415,6 +420,7 @@ public class BoundarySet {
 		
 		
 		for(int i=1;i<=model.numberOfEdges;i++){
+
 			int mp=model.edge[i].map;
 			if(mp>0){
 				model.edge[i].edgeKnown=model.edge[mp].edgeKnown;

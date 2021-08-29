@@ -33,9 +33,9 @@ public class ACMagSolver {
 		model.solver.terminate(false);
 		Vect rhsImag=null;
 		
-		
-		model.R0=0.0;
-		model.T0=Math.sqrt(1-model.R0*model.R0);
+		util.pr("============== "+model.numberOfVarNodes);
+		model.R0=0;
+		model.T0=1;//Math.sqrt(1-model.R0*model.R0);
 		
 		boolean dense=false;
 
@@ -47,10 +47,11 @@ public class ACMagSolver {
 		int[] indxT=new int[2*model.RHS.length];
 		int[] indxIncid=new int[2*model.RHS.length];
 		for(int i=1;i<=model.numberOfEdges;i++){		
+
 			int indx=model.edgeUnknownIndex[i]-1;		
-			if(indx>=0 && model.edge[i].exit)
+			if(indx>=0 && model.edge[i].exit){
 				indxT[indx]=1;
-			
+			}
 			if(indx>=0 && model.edge[i].incident)
 				indxIncid[indx]=1;
 		}
@@ -591,9 +592,7 @@ public class ACMagSolver {
 		double R0=model.R0;
 		double T0=model.T0;
 		
-		
-		int counts[]=new int[xc.length];
-		int counts2[]=new int[model.numberOfEdges+1];
+
 		
 		for(int i=1;i<=model.numberOfEdges;i++){		
 			double y=model.edge[i].node[0].getCoord(1)-y0;
@@ -601,8 +600,8 @@ public class ACMagSolver {
 			
 			if(model.edge[i].map>0) continue;
 			
-			double E0r=cos(pcw*y)*(1-y/L);
-			double E0m=sin(pcw*y)*(1-y/L);
+			double E0r=cos(pcw*y)*(1-1*y/L);
+			double E0m=sin(pcw*y)*(1-1*y/L);
 			
 			double R0r= R0*cos(-pcw*y)*(1-y/L);
 			double R0m=R0*sin(-pcw*y)*(1-y/L);
@@ -610,25 +609,14 @@ public class ACMagSolver {
 			double T0r=T0*cos(pcw*(y-L))*(y/L);
 			double T0m=T0*sin(pcw*(y-L))*(y/L);
 			
-			if(model.edge[i].exit){
-		//		util.pr(y+", "+T0m);
-			}
 			
-			counts2[i]++;
 			int indx=model.edgeUnknownIndex[i]-1;		
 			if(indx>=0){
-				counts[indx]++;
-			//	xc.el[indx].re+=E0r+R0r+T0r;
-			//	xc.el[indx].im+=E0m+R0m+T0m;
+				xc.el[indx].re+=E0r+R0r+T0r;
+				xc.el[indx].im+=E0m+R0m+T0m;
 			}
 		}
-//		util.pr(counts2.length+" eds , unx"+counts.length);
-//		for(int i=0;i<xc.length;i++){	
-//			if(counts[i]>0){
-//			util.pr(i+", "+counts[i]);
-//			util.pr(i+", "+counts2[i]);
-//			}
-//		}
+
 		
 	//	xc.show();
 		Complex av2=new Complex(0.,0);
