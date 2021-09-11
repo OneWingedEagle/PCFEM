@@ -31,18 +31,20 @@ public class ACMagSolver {
 		VectComp  b=null;
 		Vect pcrhs=null;
 		model.solver.terminate(false);
-		Vect rhsImag=null;
+		//Vect rhsImag=null;
 		
 		util.pr("============== "+model.numberOfVarNodes);
-		model.R0=0;
-		model.T0=1;//Math.sqrt(1-model.R0*model.R0);
+		//model.R0=0;
+	//	model.T0=1;//Math.sqrt(1-model.R0*model.R0);
 		
 		boolean dense=false;
 
 		model.setMagMat();
 
 		model.magMat.setRHS(model);
-
+		
+		model.RHS=model.RHS.sub(model.RHS_boundary);
+		//model.RHS_boundary.show();
 		
 		int[] indxT=new int[2*model.RHS.length];
 		int[] indxIncid=new int[2*model.RHS.length];
@@ -80,27 +82,12 @@ public class ACMagSolver {
 		double  w=2.*Math.PI*model.freq;
 		double  wr=-1./w;
 		int photonic=model.photonic;
-		int [][] bedg=new int[1+model.numberOfEdges][2];
-		
+	
 		
 		util.pr("photonic:  "+photonic);
-		
-		if(photonic==1){
-		int nb1=0;
-		int nb2=0;
-		for(int i=1;i<=model.numberOfEdges;i++){
-			if(model.edge[i].edgeKnown) continue;
-			
-			if(model.edge[i].incident) bedg[nb1++][0]=i;
-			if(model.edge[i].exit)  bedg[nb2++][1]=i;
 
-
-		}
-		}
 		SpMatComp Ks=null;
-		SpMatComp Ks1;
 		int nb=0;
-		int neq=0;
 		if(photonic==0){
 			Ks=new SpMatComp(model.Hs,model.Ss.timesNew(w));
 		}
@@ -128,63 +115,15 @@ public class ACMagSolver {
 		model.pcw=pcw;
 		if(photonic==2){
 			
-		model.magMat.setRHS_SCAT(model,1);
-		
-		rhsImag=model.RHS.deepCopy();
+	///	model.magMat.setRHS_SCAT(model,1);
+	///	
+	//	rhsImag=model.RHS.deepCopy();
 	///	rhsImag.zero();
-		model.magMat.setRHS_SCAT(model,0);
+	//	model.magMat.setRHS_SCAT(model,0);
 	///	model.RHS.zero();
 		 Ks=new SpMatComp(model.Hs.addSmallerNew(model.Ss.timesNew(-pcw2)),model.Ss.timesNew(0));
-		}else {
-			
-			 Ks1=new SpMatComp(model.Hs.addSmallerNew(model.Ss.timesNew(-pcw2)),model.Ss.timesNew(0));
-
-				 neq=Ks1.nRow;
-
-				 nb=nb1+nb2;
-					int neq1=neq+nb;
-					int neq2=neq+nb;
-					Ks=new SpMatComp(neq1,neq2);
-					for(int i=0;i<neq;i++){
-						Ks.row[i]=new SpVectComp(neq2,Ks1.row[i].nzLength);//Ks1.row[i].augh(new SpVect(2*nb,0));
-						for(int j=0;j<Ks1.row[i].nzLength;j++){
-							Ks.row[i].index[j]=Ks1.row[i].index[j];
-							Ks.row[i].el[j]=Ks1.row[i].el[j];
-						}
-
-					}
-
-					
-					for(int i=0;i<nb1;i++){
-	
-						int index=model.edgeUnknownIndex[bedg[i][0]]-1;
-						
-						Ks.row[i+neq]=new SpVectComp(neq2,2);
-						Ks.row[i+neq].index[0]=index;
-						Ks.row[i+neq].index[1]=i+neq;
-						
-						Ks.row[i+neq].el[0]=new Complex(1,0);
-						Ks.row[i+neq].el[1]=new Complex(1e-12,0);
-
-					}
-					
-					for(int i=0;i<nb2;i++){
-						
-						int index=model.edgeUnknownIndex[bedg[i][1]]-1;
-						
-						Ks.row[i+neq+nb1]=new SpVectComp(neq2,2);
-						Ks.row[i+neq+nb1].index[0]=index;
-						Ks.row[i+neq+nb1].index[1]=i+neq+nb1;
-						
-						Ks.row[i+neq+nb1].el[0]=new Complex(1,0);
-						Ks.row[i+neq+nb1].el[1]=new Complex(1e-12,0);
-
-					}
-
-	
-}
-						
-				}
+		}
+		}
 		 
  
 		if(model.analysisMode==2){
@@ -272,7 +211,8 @@ public class ACMagSolver {
 		
 		
 		if(photonic==0 || photonic==2)
-			b=new VectComp(model.RHS,rhsImag);
+			b=new VectComp(model.RHS);
+		//b=new VectComp(model.RHS,rhsImag);
 		else
 		 b=new VectComp(model.RHS.aug(new Vect(nb)));
 		
@@ -589,12 +529,12 @@ public class ACMagSolver {
 		double y1=model.spaceBoundary[3];
 		double L=y1-y0;
 		
-		double R0=model.R0;
-		double T0=model.T0;
+	//	double R0=model.R0;
+	//	double T0=model.T0;
 		
 
 		
-		for(int i=1;i<=model.numberOfEdges;i++){		
+/*		for(int i=1;i<=model.numberOfEdges;i++){		
 			double y=model.edge[i].node[0].getCoord(1)-y0;
 	
 			
@@ -615,7 +555,7 @@ public class ACMagSolver {
 				xc.el[indx].re+=E0r+R0r+T0r;
 				xc.el[indx].im+=E0m+R0m+T0m;
 			}
-		}
+		}*/
 
 		
 	//	xc.show();
@@ -635,11 +575,24 @@ public class ACMagSolver {
 		
 		}
 		av2.show();
+		
+
 			
 	if(cc1>0) av1=av1.times(1./cc1);
 		
-		if(cc2>0) av2=av2.times(1./cc2);
-		
+	if(cc2>0) av2=av2.times(1./cc2);
+	
+/*	double RR=Math.pow(av1.norm(),2);;
+	double TT=av2.norm2();
+	double sum2=RR;//+TT;
+
+	double factor2=model.E0*model.E0/sum2;
+	double factor=Math.sqrt(factor2);
+	
+	xc.timesVoid(factor);
+	av2=av2.times(factor);
+	av1=av1.times(factor);
+		*/
 	//	av.show();
 		double pcw2=pcw*pcw;
 		

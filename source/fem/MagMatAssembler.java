@@ -987,13 +987,13 @@ public class MagMatAssembler {
 					if((j1>=0 && j2>=0)){ // incident wave at 1st boundary only
 						int n1=model.edge[edgeNumb[j1]].node[0].id;
 						matrixRow=model.nodeVarIndex[n1]-1;
-					//	rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
+						rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
 					
 						rt.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;		
 
 						int n2=model.edge[edgeNumb[j2]].node[0].id;
 						matrixRow=model.nodeVarIndex[n2]-1;
-						//rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
+						rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
 						rt.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;		
 
 	

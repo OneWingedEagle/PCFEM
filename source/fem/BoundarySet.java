@@ -246,7 +246,7 @@ public class BoundarySet {
 
 		}else if(model.photonic==2){
 
-/*				model.nodeVarIndex=new int[model.numberOfNodes+1];
+				model.nodeVarIndex=new int[model.numberOfNodes+1];
 
 				
 				for(int i=1;i<=model.numberOfEdges;i++)
@@ -282,7 +282,7 @@ public class BoundarySet {
 						model.varNodeNumber[++nnx]=i;
 					}
 				}
-*/
+
 			
 
 		}
