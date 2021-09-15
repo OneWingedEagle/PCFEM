@@ -838,9 +838,7 @@ public class Calculator {
 		if(eddy){
 			sigma=model.element[ie].getSigma().el[2];			
 
-
 		}
-		
 
 		Node[] vertexNode=model.elementNodes(ie);
 		double[][] H1=new double[model.nElEdge][model.nElEdge];

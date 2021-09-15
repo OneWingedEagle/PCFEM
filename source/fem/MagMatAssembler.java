@@ -477,7 +477,7 @@ public class MagMatAssembler {
 
 	}
 	
-	public void setRHS_SCAT(Model model,int reim){		
+	public void setRHS_IncidentField(Model model,int reim){		
 
 
 		model.RHS=new Vect(model.numberOfUnknowns);
@@ -529,47 +529,47 @@ public class MagMatAssembler {
 			
 							if(reim==0){
 								
-								double E0r=E0*cos(pcw*y)*(1-1*y/L);
+								double E0r=E0*cos(pcw*y);//*(1-1*y/L);
 								
-								double R0r= R0*cos(-pcw*y)*(1-y/L);
+								double R0r=0;// R0*cos(-pcw*y)*(1-y/L);
 								
-								double T0r=T0*cos(pcw*(y-L))*(y/L);
+								double T0r=0;//T0*cos(pcw*(y-L))*(y/L);
 								
 								double Jz=-eps*pcw*pcw*(E0r+R0r+T0r);
 								
 								J=new Vect(0, 0, Jz);
 								
-								mfactor=E0*(pcw2*(1-y/L)*cos(pcw*y)-2*pcw/L*sin(pcw*y))+
+/*								mfactor=E0*(pcw2*(1-y/L)*cos(pcw*y)-2*pcw/L*sin(pcw*y))+
 										R0*(pcw2*(1-y/L)*cos(-pcw*y)+2*pcw/L*sin(-pcw*y))+
-										T0*(pcw2*(y/L)*cos(pcw*(y-L))-2*pcw/L*sin(pcw*(y-L)));
+										T0*(pcw2*(y/L)*cos(pcw*(y-L))-2*pcw/L*sin(pcw*(y-L)));*/
 								
-							//	mfactor=E0*(pcw2*cos(pcw*y));
+								mfactor=E0*(pcw2*cos(pcw*y));
 								
 
 								}
 							else if(reim==1){
-								double E0m=E0*sin(pcw*y)*(1-1*y/L);
-								double R0m=R0*sin(-pcw*y)*(1-y/L);
-								double T0m=T0*sin(pcw*(y-L))*(y/L);
+								double E0m=E0*sin(pcw*y);//*(1-1*y/L);
+								double R0m=0;//R0*sin(-pcw*y)*(1-y/L);
+								double T0m=0;//T0*sin(pcw*(y-L))*(y/L);
 
 								double Jz=-eps*pcw*pcw*(E0m+R0m+T0m);
-								
-							
+				
+
 								
 								J=new Vect(0, 0, Jz);
 								
-								mfactor=E0*(pcw2*(1-y/L)*sin(pcw*y)+2*pcw/L*cos(pcw*y))+
+/*								mfactor=E0*(pcw2*(1-y/L)*sin(pcw*y)+2*pcw/L*cos(pcw*y))+
 										R0*(pcw2*(1-y/L)*sin(-pcw*y)+2*pcw/L*cos(-pcw*y))+
-										T0*(pcw2*(y/L)*sin(pcw*(y-L))-2*pcw/L*cos(pcw*(y-L)));
+										T0*(pcw2*(y/L)*sin(pcw*(y-L))-2*pcw/L*cos(pcw*(y-L)));*/
 
-							//	mfactor=E0*(pcw2*sin(pcw*y));
+															
+								mfactor=E0*(pcw2*sin(pcw*y));
 								
 								//util.pr(J.el[2]+"   "+mfactor);
 
 								}
 							
-							J.el[2]+=mfactor;
-							
+							J.el[2]-=mfactor;
 
 						if(model.dim==2){
 							Cj[j]=J.el[2]*model.Cj2d[j];
@@ -921,7 +921,7 @@ public class MagMatAssembler {
 	}
 
 
-	public  void addRHS_SCAT(Model model,Vect rhs, Vect rt){
+	public  void addRHS_Continuity(Model model,Vect rhs, Vect rt){
 		
 		if(model.numberOfVarNodes==0) return;
 
@@ -987,13 +987,13 @@ public class MagMatAssembler {
 					if((j1>=0 && j2>=0)){ // incident wave at 1st boundary only
 						int n1=model.edge[edgeNumb[j1]].node[0].id;
 						matrixRow=model.nodeVarIndex[n1]-1;
-						rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
+						//rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
 					
 						rt.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;		
 
 						int n2=model.edge[edgeNumb[j2]].node[0].id;
 						matrixRow=model.nodeVarIndex[n2]-1;
-						rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
+						//rhs.el[matrixRow+model.numberOfUnknownEdges]+=2*edge_length/2;	
 						rt.el[matrixRow+model.numberOfUnknownEdges]+=edge_length/2;		
 
 	

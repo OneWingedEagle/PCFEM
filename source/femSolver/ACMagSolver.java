@@ -31,7 +31,7 @@ public class ACMagSolver {
 		VectComp  b=null;
 		Vect pcrhs=null;
 		model.solver.terminate(false);
-		//Vect rhsImag=null;
+		Vect rhsImag=null;
 		
 		util.pr("============== "+model.numberOfVarNodes);
 		//model.R0=0;
@@ -115,13 +115,16 @@ public class ACMagSolver {
 		model.pcw=pcw;
 		if(photonic==2){
 			
-	///	model.magMat.setRHS_SCAT(model,1);
-	///	
-	//	rhsImag=model.RHS.deepCopy();
+		model.magMat.setRHS_IncidentField(model,1);
+
+		rhsImag=model.RHS.deepCopy();
+
+		model.magMat.setRHS_IncidentField(model,0);
+
 	///	rhsImag.zero();
-	//	model.magMat.setRHS_SCAT(model,0);
 	///	model.RHS.zero();
-		 Ks=new SpMatComp(model.Hs.addSmallerNew(model.Ss.timesNew(-pcw2)),model.Ss.timesNew(0));
+		
+			Ks=new SpMatComp(model.Hs.addSmallerNew(model.Ss.timesNew(pcw2)),model.Ss.timesNew(0));
 		}
 		}
 		 
@@ -144,10 +147,8 @@ public class ACMagSolver {
 
 			 pcrhs=new Vect(model.RHS.length);
 			Vect rt=new Vect(model.RHS.length);
-			model.magMat.addRHS_SCAT(model,pcrhs,rt);
-		
-		//	model.RHS=	model.RHS.add(rhs);
-			
+			model.magMat.addRHS_Continuity(model,pcrhs,rt);
+					
 		//	model.Qs.shownzA();
 			int nuned=model.numberOfUnknownEdges;
 
@@ -168,19 +169,16 @@ public class ACMagSolver {
 				//model.Qs.shownzA();;
 	//		model.Ps.shownzA();;
 				for(int i=0;i<model.numberOfVarNodes;i++){
-					int edgnum=map[i];
+	
 					int indx=model.edgeUnknownIndex[map[i]]-1;		
 					
-					//model.edge[map[i]].node[0].getCoord().hshow();
-
-					SpVectComp spv=new SpVectComp(model.Ps.row[i].times(1),model.RHS.length);
+					SpVectComp spv=new SpVectComp(model.Ps.row[i].times(-1),model.RHS.length);
 					
 			
 					for(int k=0;k<spv.nzLength;k++)
 					{
 
 						if(spv.index[k]==indx){
-							//spv.el[k]=spv.el[k].add(new Complex(-rt.el[i+nuned],0).times(pcw));
 							spv.el[k]=spv.el[k].add(new Complex(-rt.el[i+nuned],0).times(pcw));
 						}
 					}
@@ -211,8 +209,8 @@ public class ACMagSolver {
 		
 		
 		if(photonic==0 || photonic==2)
-			b=new VectComp(model.RHS);
-		//b=new VectComp(model.RHS,rhsImag);
+		//	b=new VectComp(model.RHS);
+		b=new VectComp(model.RHS,rhsImag);
 		else
 		 b=new VectComp(model.RHS.aug(new Vect(nb)));
 		
@@ -230,7 +228,7 @@ public class ACMagSolver {
 
 			 }
 		 
-	
+
 		if(dense){
 			
 			
@@ -436,10 +434,13 @@ public class ACMagSolver {
 					}
 				}
 				
+			//	b.show();
 
 				b =Ks2t.amul(b);
 
 				Ks=Cs.deepCopy();
+			//	b.show();
+			//	Ks.show();
 
 				Ks.setSymHerm(1); // symmetric but not Hermitian
 
@@ -534,28 +535,28 @@ public class ACMagSolver {
 		
 
 		
-/*		for(int i=1;i<=model.numberOfEdges;i++){		
+		for(int i=1;i<=model.numberOfEdges;i++){		
 			double y=model.edge[i].node[0].getCoord(1)-y0;
 	
 			
 			if(model.edge[i].map>0) continue;
 			
-			double E0r=cos(pcw*y)*(1-1*y/L);
-			double E0m=sin(pcw*y)*(1-1*y/L);
+			double E0r=cos(pcw*y);//*(1-1*y/L);
+			double E0m=sin(pcw*y);//*(1-1*y/L);
 			
-			double R0r= R0*cos(-pcw*y)*(1-y/L);
+/*			double R0r= R0*cos(-pcw*y)*(1-y/L);
 			double R0m=R0*sin(-pcw*y)*(1-y/L);
 			
 			double T0r=T0*cos(pcw*(y-L))*(y/L);
-			double T0m=T0*sin(pcw*(y-L))*(y/L);
+			double T0m=T0*sin(pcw*(y-L))*(y/L);*/
 			
 			
 			int indx=model.edgeUnknownIndex[i]-1;		
 			if(indx>=0){
-				xc.el[indx].re+=E0r+R0r+T0r;
-				xc.el[indx].im+=E0m+R0m+T0m;
+				xc.el[indx].re+=E0r;//+R0r+T0r;
+				xc.el[indx].im+=E0m;//+R0m+T0m;
 			}
-		}*/
+		}
 
 		
 	//	xc.show();

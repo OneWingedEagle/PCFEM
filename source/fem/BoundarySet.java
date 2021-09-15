@@ -393,10 +393,14 @@ public class BoundarySet {
 						
 						if( model.BCtype[j]==-2){
 							model.edge[i].incident=true;
+						//	model.edge[i].setKnownA(0);
+						//nDirichlet++;
 							continue;
 						}
 						else if( model.BCtype[j]==-3){
 							model.edge[i].exit=true;
+						//	model.edge[i].setKnownA(0);
+						//	nDirichlet++;
 							continue;
 						}
 						
